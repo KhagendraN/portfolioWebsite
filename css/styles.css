@@ -61,6 +61,15 @@ h1, h2, p {
   margin: 0;
 }
 
+p{
+  text-align: center;
+  margin-left: 100px;
+  margin-right: 100px;
+}
+.workText{
+  text-decoration: solid;
+  text-decoration-color: #e9a9ea;
+}
 ul {
   margin: 0;
   padding: 0;
@@ -306,16 +315,25 @@ img {
   z-index: var(--z-back);
 }
 .skills__html {
+  width: 90%;
+}
+.skills__cprogram {
   width: 95%;
 }
-.skills__css {
-  width: 85%;
+.skills__java {
+  width: 60%;
 }
-.skills__js {
+.skills__python {
   width: 65%;
 }
-.skills__ux {
+.skills__Cpp {
   width: 85%;
+}
+.skills__Linux {
+  width: 85%;
+}
+.skills__Microcontroller {
+  width: 50%;
 }
 .skills__img {
   border-radius: 0.5rem;
