@@ -236,7 +236,7 @@ img {
 /*BUTTONS*/
 .button {
   display: inline-block;
-  background-color: var(--first-color);
+  background-color:  var(--first-color);
   color: #fff;;
   padding: 0.75rem 2.5rem;
   font-weight: var(--font-semi);
@@ -245,6 +245,8 @@ img {
 }
 .button:hover {
   box-shadow: 0px 10px 36px rgba(0, 0, 0, 0.15);
+  background: aqua;
+  transform: translateY(-3px);
 }
 
 /* ===== ABOUT =====*/
