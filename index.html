@@ -4,13 +4,13 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link rel="stylesheet" href="assets/css/styles.css">
+        <link rel="stylesheet" href="css/styles.css">
 
         <!-- =====BOX ICONS===== -->
         <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
 
         <title>Khagendra Neupane</title>
-        <link rel='stylesheet' href="css/styles.css">
+        <script src="js/main.js"></script>
     </head>
     <body>
         <!--===== HEADER =====-->
@@ -42,7 +42,7 @@
                 <div class="home__data">
                     <h1 class="home__title">Hi,<br>I'am <span class="home__title-color">Khagendra</span><br> Engineer</h1>
 
-                    <a href="#" class="button">Contact</a>
+                    <a href="assets/files/khagendra_cv.pdf" class="button">View CV</a>
                 </div>
 
                 <div class="home__social">
@@ -52,7 +52,15 @@
                 </div>
 
                 <div class="home__img">
-                    <img src="assets/img/profile.jpeg">
+                    <svg class="home__blob" viewBox="0 0 479 467" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <mask id="mask0" mask-type="alpha">
+                            <path d="M9.19024 145.964C34.0253 76.5814 114.865 54.7299 184.111 29.4823C245.804 6.98884 311.86 -14.9503 370.735 14.143C431.207 44.026 467.948 107.508 477.191 174.311C485.897 237.229 454.931 294.377 416.506 344.954C373.74 401.245 326.068 462.801 255.442 466.189C179.416 469.835 111.552 422.137 65.1576 361.805C17.4835 299.81 -17.1617 219.583 9.19024 145.964Z"/>
+                        </mask>
+                        <g mask="url(#mask0)">
+                            <path d="M9.19024 145.964C34.0253 76.5814 114.865 54.7299 184.111 29.4823C245.804 6.98884 311.86 -14.9503 370.735 14.143C431.207 44.026 467.948 107.508 477.191 174.311C485.897 237.229 454.931 294.377 416.506 344.954C373.74 401.245 326.068 462.801 255.442 466.189C179.416 469.835 111.552 422.137 65.1576 361.805C17.4835 299.81 -17.1617 219.583 9.19024 145.964Z"/>
+                            <image class="home__blob-img" x="50" y="60" href="assets/img/profile-pic.png"/>
+                        </g>
+                    </svg>
                 </div>
             </section>
 
@@ -141,23 +149,23 @@
                 <h2 class="section-title">Work</h2>
 
                 <div class="work__container bd-grid">
-                    <a href="" class="work__img">
-                        <img src="assets/img/work1.jpg" alt="">
+                    <a href="https://github.com/KhagendraN/simple-http-server" class="work__img">
+                        <img src="https://universae.com/wp-content/uploads/2023/06/que-es-el-networking.webp" alt="">
+                    </a>
+                    <a href="https://github.com/KhagendraN/LANConnect-Chat-Application" class="work__img">
+                        <img src="https://cdn.mos.cms.futurecdn.net/VFLt5vHV7aCoLrLGjP9Qwm-1200-80.jpg" alt="">
+                    </a>
+                    <a href="https://github.com/KhagendraN/ArchShell" class="work__img">
+                        <img src="https://adminvps.ru/blog/wp-content/uploads/2024/10/os-linux-polzovately-art-prew.webp" alt="">
+                    </a>
+                    <a href="https://github.com/KhagendraN/AIDesktopAssistant" class="work__img">
+                        <img src="https://miro.medium.com/v2/resize:fit:1400/1*fZsOOTFSFpBcc9DEApeLow.png" alt="">
                     </a>
                     <a href="" class="work__img">
-                        <img src="assets/img/work2.jpg" alt="">
+                        <img src="https://musicmadepro.com/cdn/shop/articles/writethewill_How_To_Change_Song_Lyrics_With_AI_e5730689-30a1-468b-9ca9-54d21a28a5dc.png?v=1704731480" alt="">
                     </a>
                     <a href="" class="work__img">
-                        <img src="assets/img/work3.jpg" alt="">
-                    </a>
-                    <a href="" class="work__img">
-                        <img src="assets/img/work4.jpg" alt="">
-                    </a>
-                    <a href="" class="work__img">
-                        <img src="assets/img/work5.jpg" alt="">
-                    </a>
-                    <a href="" class="work__img">
-                        <img src="assets/img/work6.jpg" alt="">
+                        <img src="https://blog.aihm.education/hubfs/AIHM_Impact%20of%20AI%20to%20teacher.webp" alt="">
                     </a>
                 </div>
             </section>
@@ -167,12 +175,13 @@
                 <h2 class="section-title">Contact</h2>
 
                 <div class="contact__container bd-grid">
-                    <form action="" class="contact__form">
-                        <input type="text" placeholder="Name" class="contact__input">
-                        <input type="mail" placeholder="Email" class="contact__input">
-                        <textarea name="" id="" cols="0" rows="10" class="contact__input"></textarea>
-                        <input type="button" value="Send" class="contact__button button">
+                    <form id="contact-form" class="contact__form">
+                        <input type="text" name="name" placeholder="Name" class="contact__input" required>
+                        <input type="email" name="email" placeholder="Email" class="contact__input" required>
+                        <textarea name="message" cols="0" rows="10" placeholder="Message" class="contact__input" required></textarea>
+                        <input type="button" value="Send" class="contact__button button" id="send-button">
                     </form>
+                    
                 </div>
             </section>
         </main>
@@ -181,9 +190,9 @@
         <footer class="footer">
             <p class="footer__title">Khagendra</p>
             <div class="footer__social">
-                <a href="#" class="footer__icon"><i class='bx bxl-facebook' ></i></a>
-                <a href="#" class="footer__icon"><i class='bx bxl-instagram' ></i></a>
-                <a href="#" class="footer__icon"><i class='bx bxl-twitter' ></i></a>
+                <a href="https://www.facebook.com/khagendra.neupane.5602" class="footer__icon"><i class='bx bxl-facebook' ></i></a>
+                <a href="https://www.instagram.com/khagendra.neupane_?igsh=YzljYTk1ODg3Zg==" class="footer__icon"><i class='bx bxl-instagram' ></i></a>
+                <a href="https://discord.com/channels/@me" class="footer__icon"><i class='bx bxl-discord' ></i></a>
             </div>
             <p class="footer__copy">&#169; Khagx. All rigths reserved</p>
         </footer>
@@ -194,5 +203,10 @@
 
         <!--===== MAIN JS =====-->
         <script src="assets/js/main.js"></script>
+
+        <!--connect to email-->
+
+        <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+        
     </body>
 </html>
