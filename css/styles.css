@@ -60,12 +60,9 @@ body {
 h1, h2, p {
   margin: 0;
 }
-.workText{
+.text{
   text-align: center;
-  margin-left: 100px;
-  margin-right: 100px;
 }
-
 ul {
   margin: 0;
   padding: 0;
