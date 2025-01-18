@@ -61,15 +61,10 @@ h1, h2, p {
   margin: 0;
 }
 
-p{
+.text{
   text-align: center;
-  margin-left: 100px;
-  margin-right: 100px;
 }
-.workText{
-  text-decoration: solid;
-  text-decoration-color: #e9a9ea;
-}
+
 ul {
   margin: 0;
   padding: 0;
