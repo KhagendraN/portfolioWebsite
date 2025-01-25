@@ -488,12 +488,6 @@ img {
   .about__img img {
     width: 300px;
   }
-  .logo__img{
-    border-radius: 50%;
-    height: 50px;
-    width: 50px;
-    margin-left: 48%;
-  }
   .skills__container {
     grid-template-columns: repeat(2, 1fr);
     column-gap: 2rem;
