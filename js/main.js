@@ -42,6 +42,16 @@ const scrollActive = () =>{
 }
 window.addEventListener('scroll', scrollActive)
 
+/*===== NAVBAR STICKY/FADE EFFECT ON SCROLL =====*/
+window.addEventListener('scroll', function() {
+    var header = document.querySelector('.l-header');
+    if (window.scrollY > 10) {
+        header.classList.add('scrolled');
+    } else {
+        header.classList.remove('scrolled');
+    }
+});
+
 /*===== SCROLL REVEAL ANIMATION =====*/
 const sr = ScrollReveal({
     origin: 'top',
@@ -69,4 +79,188 @@ document.querySelector(".button").addEventListener("click", function (event) {
     tempLink.click(); // Programmatically click the link
     document.body.removeChild(tempLink); // Remove the link after download
 });
+
+/*===== SKILL BAR ANIMATION ON HOVER/FOCUS =====*/
+document.querySelectorAll('.skills__data').forEach(function(skill) {
+    var bar = skill.querySelector('.skills__bar');
+    var percent = skill.querySelector('.skills__percentage');
+    if (bar && percent) {
+        var width = percent.textContent.trim();
+        skill.addEventListener('mouseenter', function() {
+            bar.style.width = width;
+        });
+        skill.addEventListener('focus', function() {
+            bar.style.width = width;
+        });
+        skill.addEventListener('mouseleave', function() {
+            bar.style.width = '0';
+        });
+        skill.addEventListener('blur', function() {
+            bar.style.width = '0';
+        });
+    }
+});
+
+/*===== PROJECT CARD MODAL PREVIEW (RICHER, BUTTON ONLY) =====*/
+// Remove old card click handler if present
+// Add event listener to .project__details-btn only
+function getTechIcon(tech) {
+    // Map tech to icon HTML (FontAwesome/Boxicons/emoji)
+    switch (tech.trim()) {
+        case 'Python': return '<span class="project__modal-tech-icon" data-tech="Python" title="Python"><i class="fab fa-python"></i></span>';
+        case 'C': return '<span class="project__modal-tech-icon" data-tech="C" title="C"><i class="fas fa-code"></i></span>';
+        case 'Java': return '<span class="project__modal-tech-icon" data-tech="Java" title="Java"><i class="fab fa-java"></i></span>';
+        case 'Linux': return '<span class="project__modal-tech-icon" data-tech="Linux" title="Linux"><i class="fab fa-linux"></i></span>';
+        case 'AI': return '<span class="project__modal-tech-icon" data-tech="AI" title="AI"><i class="fas fa-brain"></i></span>';
+        case 'Networking': return '<span class="project__modal-tech-icon" data-tech="Networking" title="Networking"><i class="fas fa-network-wired"></i></span>';
+        default: return '<span class="project__modal-tech-icon" data-tech="'+tech+'">'+tech+'</span>';
+    }
+}
+document.querySelectorAll('.project__details-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var card = btn.closest('.project__card');
+        var modalTemplate = document.querySelector('.project__modal-template');
+        if (!modalTemplate) return;
+        var modal = document.createElement('div');
+        modal.className = 'project__modal active';
+        // Clone modal content
+        var content = modalTemplate.firstElementChild.cloneNode(true);
+        // Fill modal content from card data attributes
+        content.querySelector('.project__modal-title').textContent = card.getAttribute('data-title') || '';
+        content.querySelector('.project__modal-desc').textContent = card.getAttribute('data-desc') || '';
+        var img = content.querySelector('.project__modal-img');
+        img.src = card.getAttribute('data-img') || '';
+        img.alt = card.getAttribute('data-title') || 'Project preview';
+        // Tech stack icons
+        var techs = (card.getAttribute('data-tech')||'').split(',');
+        var techIcons = '';
+        techs.forEach(function(tech) { if(tech.trim()) techIcons += getTechIcon(tech); });
+        content.querySelector('.project__modal-tech-icons').innerHTML = techIcons;
+        // Links
+        var links = '';
+        var github = card.getAttribute('data-github');
+        if (github) links += '<a href="'+github+'" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub</a>';
+        var demo = card.getAttribute('data-demo');
+        if (demo) links += '<a href="'+demo+'" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Demo/README</a>';
+        content.querySelector('.project__modal-links').innerHTML = links;
+        modal.appendChild(content);
+        document.body.appendChild(modal);
+        document.body.style.overflow = 'hidden';
+        content.querySelector('.project__modal-close').focus();
+        // Close modal on click X or outside
+        function closeModal() {
+            document.body.removeChild(modal);
+            document.body.style.overflow = '';
+        }
+        content.querySelector('.project__modal-close').addEventListener('click', closeModal);
+        modal.addEventListener('click', function(ev) {
+            if (ev.target === modal) closeModal();
+        });
+        document.addEventListener('keydown', function esc(e) {
+            if (e.key === 'Escape') { closeModal(); document.removeEventListener('keydown', esc); }
+        });
+    });
+});
+
+/*===== HERO SCROLL INDICATOR SMOOTH SCROLL =====*/
+document.querySelectorAll('.hero__scroll-indicator').forEach(function(indicator) {
+    indicator.addEventListener('click', function(e) {
+        e.preventDefault();
+        var about = document.getElementById('about');
+        if (about) {
+            about.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+});
+
+/*===== TIMELINE FADE-IN ON SCROLL =====*/
+function isInViewport(el) {
+    const rect = el.getBoundingClientRect();
+    return (
+        rect.top < window.innerHeight - 60 &&
+        rect.bottom > 60
+    );
+}
+function revealTimeline() {
+    document.querySelectorAll('.timeline__item').forEach(function(item) {
+        if (isInViewport(item)) {
+            item.style.opacity = 1;
+            item.style.transform = 'translateY(0)';
+        } else {
+            item.style.opacity = 0;
+            item.style.transform = 'translateY(40px)';
+        }
+    });
+}
+window.addEventListener('scroll', revealTimeline);
+window.addEventListener('resize', revealTimeline);
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.timeline__item').forEach(function(item) {
+        item.style.transition = 'opacity 0.7s, transform 0.7s';
+        item.style.opacity = 0;
+        item.style.transform = 'translateY(40px)';
+    });
+    revealTimeline();
+});
+
+/*===== DARK/LIGHT MODE TOGGLE =====*/
+(function() {
+    const toggleBtn = document.getElementById('theme-toggle');
+    if (!toggleBtn) return;
+    const icon = toggleBtn.querySelector('i');
+    const body = document.body;
+    const darkClass = 'dark-mode';
+    function setTheme(dark) {
+        if (dark) {
+            body.classList.add(darkClass);
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+            toggleBtn.setAttribute('aria-label', 'Switch to light mode');
+        } else {
+            body.classList.remove(darkClass);
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+            toggleBtn.setAttribute('aria-label', 'Switch to dark mode');
+        }
+    }
+    // Load preference
+    let dark = localStorage.getItem('theme') === 'dark';
+    if (localStorage.getItem('theme') === null) {
+        // If no preference, use system
+        dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    setTheme(dark);
+    toggleBtn.addEventListener('click', function() {
+        dark = !body.classList.contains(darkClass);
+        setTheme(dark);
+        localStorage.setItem('theme', dark ? 'dark' : 'light');
+    });
+})();
+
+/*===== VIEW MORE/LESS PROJECTS BUTTONS =====*/
+(function() {
+    var moreBtn = document.getElementById('projects-more-btn');
+    var lessBtn = document.getElementById('projects-less-btn');
+    var hiddenProjects = document.querySelectorAll('.project--hidden');
+    var projectsSection = document.getElementById('projects');
+    if (!moreBtn || !lessBtn) return;
+    moreBtn.addEventListener('click', function() {
+        hiddenProjects.forEach(function(card) {
+            card.style.display = '';
+        });
+        moreBtn.style.display = 'none';
+        lessBtn.style.display = '';
+    });
+    lessBtn.addEventListener('click', function() {
+        hiddenProjects.forEach(function(card) {
+            card.style.display = 'none';
+        });
+        lessBtn.style.display = 'none';
+        moreBtn.style.display = '';
+        if (projectsSection) {
+            projectsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+})();
 
