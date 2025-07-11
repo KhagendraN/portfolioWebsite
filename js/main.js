@@ -62,10 +62,9 @@ document.querySelector(".button").addEventListener("click", function (event) {
 
     const cvFilePath = "assets/files/khagendra_cv.pdf"; // Path to your CV file
 
-    // Create a temporary link element
     const tempLink = document.createElement("a");
     tempLink.href = cvFilePath;
-    tempLink.download = "Khagendra_CV.pdf"; // Name the file for download
+    tempLink.download = "Khagendra_CV.pdf"; 
     document.body.appendChild(tempLink); // Append the link to the document
     tempLink.click(); // Programmatically click the link
     document.body.removeChild(tempLink); // Remove the link after download
