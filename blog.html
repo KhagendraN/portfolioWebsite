@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blog | Khagendra Neupane</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    .blog-list { max-width: 700px; margin: 2rem auto; padding: 1rem; }
+    .blog-post { background: rgba(255,255,255,0.18); backdrop-filter: blur(8px); border-radius: 1.2rem; box-shadow: 0 8px 32px rgba(34,34,59,0.13); border: 1px solid rgba(255,255,255,0.25); margin-bottom: 2rem; padding: 2rem; }
+    .blog-title { font-size: 2rem; margin-bottom: 0.5rem; }
+    .blog-date { color: #6366f1; font-size: 1rem; margin-bottom: 1rem; }
+    .blog-image { max-width: 100%; border-radius: 1rem; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <header class="l-header">
+    <nav class="nav bd-grid">
+      <div><a href="index.html" class="nav__logo">Khagendra</a></div>
+      <div class="nav__menu" id="nav-menu">
+        <ul class="nav__list">
+          <li class="nav__item"><a href="index.html" class="nav__link">Home</a></li>
+          <li class="nav__item"><a href="blog.html" class="nav__link active-link">Blog</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <section class="blog-list" id="blog-list">
+      <h2 class="section-title">Blog Posts</h2>
+      <div id="posts"></div>
+    </section>
+  </main>
+  <script>
+    // List blog posts in /blog directory
+    const blogFiles = [
+      '2025-09-13-sample-post.md'
+      // Add more blog post filenames here as you create them
+    ];
+    function fetchAndRenderBlog(file) {
+      fetch('blog/' + file)
+        .then(res => res.text())
+        .then(md => {
+          // Parse frontmatter
+          const fmMatch = md.match(/^---([\s\S]*?)---/);
+          let fm = {};
+          let body = md;
+          if (fmMatch) {
+            fmMatch[1].trim().split('\n').forEach(line => {
+              const [key, ...rest] = line.split(':');
+              fm[key.trim()] = rest.join(':').trim().replace(/^"|"$/g, '');
+            });
+            body = md.replace(fmMatch[0], '').trim();
+          }
+          // Render post
+          const postDiv = document.createElement('div');
+          postDiv.className = 'blog-post';
+          postDiv.innerHTML = `
+            <div class="blog-title">${fm.title || 'Untitled'}</div>
+            <div class="blog-date">${fm.date || ''}</div>
+            ${fm.image ? `<img src="${fm.image}" alt="${fm.title}" class="blog-image">` : ''}
+            <div class="blog-body">${marked.parse(body)}</div>
+          `;
+          document.getElementById('posts').appendChild(postDiv);
+        });
+    }
+    blogFiles.forEach(fetchAndRenderBlog);
+  </script>
+</body>
+</html>

@@ -86,6 +86,7 @@ document.querySelectorAll('.skills__data').forEach(function(skill) {
     var percent = skill.querySelector('.skills__percentage');
     if (bar && percent) {
         var width = percent.textContent.trim();
+        bar.style.transition = 'width 1s cubic-bezier(.77,0,.18,1)';
         skill.addEventListener('mouseenter', function() {
             bar.style.width = width;
         });
@@ -202,6 +203,10 @@ document.addEventListener('DOMContentLoaded', function() {
         item.style.transform = 'translateY(40px)';
     });
     revealTimeline();
+    var yearEl = document.getElementById('footer-year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+    var formStatus = document.getElementById('form-status');
+    if (formStatus) { formStatus.textContent = ''; }
 });
 
 /*===== DARK/LIGHT MODE TOGGLE =====*/
@@ -225,9 +230,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     // Load preference
-    let dark = localStorage.getItem('theme') === 'dark';
-    if (localStorage.getItem('theme') === null) {
-        // If no preference, use system
+    let dark = false;
+    if (localStorage.getItem('theme') === 'dark') {
+        dark = true;
+    } else if (localStorage.getItem('theme') === 'light') {
+        dark = false;
+    } else {
         dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     }
     setTheme(dark);
@@ -263,4 +271,62 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 })();
+
+(function() {
+    var form = document.getElementById('contact-form');
+    if (!form) return;
+    var status = document.getElementById('form-status');
+    function setStatus(msg, isError) {
+        if (!status) return;
+        status.textContent = msg;
+        status.className = isError ? 'form-status form-status--error' : 'form-status form-status--ok';
+        status.setAttribute('aria-live', 'polite');
+    }
+    function isValidEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+    form.addEventListener('submit', function(e) {
+        var name = form.querySelector('input[name="name"]');
+        var email = form.querySelector('input[name="email"]');
+        var message = form.querySelector('textarea[name="message"]');
+        setStatus('', false);
+        [name, email, message].forEach(function(el){ if (el) el.classList.remove('input-error'); });
+        if (!name.value.trim()) {
+            name.classList.add('input-error');
+            name.focus();
+            setStatus('Please enter your name.', true);
+            e.preventDefault();
+            return;
+        }
+        if (!email.value.trim() || !isValidEmail(email.value.trim())) {
+            email.classList.add('input-error');
+            email.focus();
+            setStatus('Please provide a valid email address.', true);
+            e.preventDefault();
+            return;
+        }
+        if (!message.value.trim()) {
+            message.classList.add('input-error');
+            message.focus();
+            setStatus('Please enter a message.', true);
+            e.preventDefault();
+            return;
+        }
+        // Allow submit to proceed for Formspree
+    });
+})();
+
+document.addEventListener('DOMContentLoaded', function() {
+  function revealSections() {
+    document.querySelectorAll('.section').forEach(function(section) {
+      const rect = section.getBoundingClientRect();
+      if (rect.top < window.innerHeight - 60) {
+        section.classList.add('visible');
+      }
+    });
+  }
+  window.addEventListener('scroll', revealSections);
+  window.addEventListener('resize', revealSections);
+  revealSections();
+});
 
