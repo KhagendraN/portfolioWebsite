@@ -2,16 +2,341 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Blog | Khagendra Neupane</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog | Khagendra Neupane</title>
+  <meta name="description" content="Explore insights on cybersecurity, networking, AI/ML, and technology from Khagendra Neupane's blog.">
+  <meta name="keywords" content="blog, cybersecurity, networking, AI, machine learning, technology, tutorials, programming">
+  <link rel="canonical" href="https://khagendraneupane.com.np/blog.html">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Boxicons & FontAwesome -->
+  <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
-    .blog-list { max-width: 700px; margin: 2rem auto; padding: 1rem; }
-    .blog-post { background: rgba(255,255,255,0.18); backdrop-filter: blur(8px); border-radius: 1.2rem; box-shadow: 0 8px 32px rgba(34,34,59,0.13); border: 1px solid rgba(255,255,255,0.25); margin-bottom: 2rem; padding: 2rem; }
-    .blog-title { font-size: 2rem; margin-bottom: 0.5rem; }
-    .blog-date { color: #6366f1; font-size: 1rem; margin-bottom: 1rem; }
-    .blog-image { max-width: 100%; border-radius: 1rem; margin-bottom: 1rem; }
+    /* Blog-specific styles */
+    .blog-hero {
+      background: linear-gradient(120deg, #6366f1 0%, #ff6b6b 100%);
+      padding: 6rem 0 4rem;
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .blog-hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      opacity: 0.3;
+    }
+    .blog-hero h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+    .blog-hero p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .blog-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+    
+    .blog-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      justify-content: center;
+    }
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      border: 2px solid #6366f1;
+      background: transparent;
+      color: #6366f1;
+      border-radius: 2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: #6366f1;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+    }
+    
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    
+    .blog-card {
+      background: rgba(255,255,255,0.18);
+      backdrop-filter: blur(8px);
+      border-radius: 1.5rem;
+      box-shadow: 0 8px 32px rgba(99,102,241,0.13);
+      border: 1px solid rgba(255,255,255,0.25);
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      position: relative;
+    }
+    .blog-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 16px 48px rgba(99,102,241,0.2);
+    }
+    
+    .blog-card-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background: linear-gradient(45deg, #6366f1, #ff6b6b);
+    }
+    
+    .blog-card-content {
+      padding: 1.5rem;
+    }
+    
+    .blog-genre {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 1rem;
+    }
+    .blog-genre.tech { background: #6366f1; color: white; }
+    .blog-genre.tutorial { background: #10b981; color: white; }
+    .blog-genre.lifestyle { background: #f59e0b; color: white; }
+    .blog-genre.news { background: #ef4444; color: white; }
+    .blog-genre.personal { background: #8b5cf6; color: white; }
+    
+    .blog-card-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #22223b;
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+    
+    .blog-card-excerpt {
+      color: #4a4e69;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .blog-card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+    
+    .blog-card-date {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .blog-card-read-time {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    /* Modal styles */
+    .blog-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(34,34,59,0.8);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+      padding: 1rem;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .blog-modal-content {
+      background: #fff;
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 60px rgba(99,102,241,0.3);
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .blog-modal-header {
+      padding: 2rem 2rem 1rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .blog-modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #6366f1;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .blog-modal-close:hover {
+      background: #4f46e5;
+      transform: scale(1.1);
+    }
+    .blog-modal-body {
+      padding: 2rem;
+    }
+    .blog-modal-body h1, .blog-modal-body h2, .blog-modal-body h3 {
+      color: #22223b;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    .blog-modal-body h1:first-child {
+      margin-top: 0;
+    }
+    .blog-modal-body p {
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+      color: #4a4e69;
+    }
+    .blog-modal-body code {
+      background: #f3f4f6;
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.25rem;
+      font-family: 'Courier New', monospace;
+    }
+    .blog-modal-body pre {
+      background: #1f2937;
+      color: #f9fafb;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+    .blog-modal-body blockquote {
+      border-left: 4px solid #6366f1;
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+      font-style: italic;
+      color: #6b7280;
+    }
+    
+    /* Dark mode support */
+    .dark-mode .blog-card {
+      background: rgba(35,35,74,0.8);
+      border-color: rgba(99,102,241,0.3);
+    }
+    .dark-mode .blog-card-title {
+      color: #e9a9ea;
+    }
+    .dark-mode .blog-card-excerpt {
+      color: #a3bffa;
+    }
+    .dark-mode .blog-modal-content {
+      background: #23234a;
+      color: #e9a9ea;
+    }
+    .dark-mode .blog-modal-header {
+      border-color: rgba(99,102,241,0.3);
+    }
+    .dark-mode .blog-modal-body h1,
+    .dark-mode .blog-modal-body h2,
+    .dark-mode .blog-modal-body h3 {
+      color: #e9a9ea;
+    }
+    .dark-mode .blog-modal-body p {
+      color: #a3bffa;
+    }
+    .dark-mode .blog-modal-body code {
+      background: #374151;
+      color: #f9fafb;
+    }
+    .dark-mode .blog-modal-body pre {
+      background: #111827;
+    }
+    .dark-mode .blog-modal-body blockquote {
+      border-color: #6366f1;
+      color: #a3bffa;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .blog-hero h1 {
+        font-size: 2rem;
+      }
+      .blog-hero p {
+        font-size: 1rem;
+      }
+      .blog-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      .blog-filters {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+      }
+      .blog-modal-content {
+        margin: 0.5rem;
+        max-height: 95vh;
+      }
+      .blog-modal-header,
+      .blog-modal-body {
+        padding: 1.5rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .blog-container {
+        padding: 1rem 0.5rem;
+      }
+      .blog-card-content {
+        padding: 1rem;
+      }
+      .blog-modal-header,
+      .blog-modal-body {
+        padding: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -24,22 +349,122 @@
           <li class="nav__item"><a href="blog.html" class="nav__link active-link">Blog</a></li>
         </ul>
       </div>
+      <div class="nav__toggle" id="nav-toggle">
+        <i class='bx bx-menu'></i>
+      </div>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+        <i class="fas fa-moon"></i>
+      </button>
     </nav>
   </header>
+  
   <main>
-    <section class="blog-list" id="blog-list">
-      <h2 class="section-title">Blog Posts</h2>
-      <div id="posts"></div>
+    <!-- Blog Hero Section -->
+    <section class="blog-hero">
+      <h1>Blog & Insights</h1>
+      <p>Exploring cybersecurity, networking, AI/ML, and technology trends</p>
     </section>
+    
+    <!-- Blog Container -->
+    <div class="blog-container">
+      <!-- Filter Buttons -->
+      <div class="blog-filters">
+        <button class="filter-btn active" data-filter="all">All Posts</button>
+        <button class="filter-btn" data-filter="tech">Tech</button>
+        <button class="filter-btn" data-filter="tutorial">Tutorials</button>
+        <button class="filter-btn" data-filter="lifestyle">Lifestyle</button>
+        <button class="filter-btn" data-filter="news">News</button>
+        <button class="filter-btn" data-filter="personal">Personal</button>
+      </div>
+      
+      <!-- Blog Grid -->
+      <div class="blog-grid" id="blog-grid">
+        <!-- Posts will be dynamically inserted here -->
+      </div>
+    </div>
   </main>
   <script>
-    // List blog posts in /blog directory
+    // Enhanced blog posts with genre support
     const blogFiles = [
-      '2025-09-13-sample-post.md'
-      // Add more blog post filenames here as you create them
+      {
+        file: '2025-09-13-sample-post.md',
+        genre: 'tech',
+        readTime: '5 min read'
+      },
+      {
+        file: '2025-09-14-networking-tips.md',
+        genre: 'tutorial',
+        readTime: '8 min read'
+      },
+      {
+        file: '2025-09-15-ai-trends.md',
+        genre: 'news',
+        readTime: '6 min read'
+      },
+      {
+        file: '2025-09-16-student-life.md',
+        genre: 'personal',
+        readTime: '4 min read'
+      }
     ];
-    function fetchAndRenderBlog(file) {
-      fetch('blog/' + file)
+
+    let allPosts = [];
+    let filteredPosts = [];
+
+    // Theme toggle functionality
+    (function() {
+      const toggleBtn = document.getElementById('theme-toggle');
+      if (!toggleBtn) return;
+      const icon = toggleBtn.querySelector('i');
+      const body = document.body;
+      const darkClass = 'dark-mode';
+      
+      function setTheme(dark) {
+        if (dark) {
+          body.classList.add(darkClass);
+          icon.classList.remove('fa-moon');
+          icon.classList.add('fa-sun');
+          toggleBtn.setAttribute('aria-label', 'Switch to light mode');
+        } else {
+          body.classList.remove(darkClass);
+          icon.classList.remove('fa-sun');
+          icon.classList.add('fa-moon');
+          toggleBtn.setAttribute('aria-label', 'Switch to dark mode');
+        }
+      }
+      
+      // Load preference
+      let dark = false;
+      if (localStorage.getItem('theme') === 'dark') {
+        dark = true;
+      } else if (localStorage.getItem('theme') === 'light') {
+        dark = false;
+      } else {
+        dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      }
+      setTheme(dark);
+      
+      toggleBtn.addEventListener('click', function() {
+        dark = !body.classList.contains(darkClass);
+        setTheme(dark);
+        localStorage.setItem('theme', dark ? 'dark' : 'light');
+      });
+    })();
+
+    // Mobile menu toggle
+    (function() {
+      const navToggle = document.getElementById('nav-toggle');
+      const navMenu = document.getElementById('nav-menu');
+      
+      if (navToggle && navMenu) {
+        navToggle.addEventListener('click', function() {
+          navMenu.classList.toggle('show');
+        });
+      }
+    })();
+
+    function fetchAndRenderBlog(blogData) {
+      fetch('blog/' + blogData.file)
         .then(res => res.text())
         .then(md => {
           // Parse frontmatter
@@ -53,19 +478,160 @@
             });
             body = md.replace(fmMatch[0], '').trim();
           }
-          // Render post
-          const postDiv = document.createElement('div');
-          postDiv.className = 'blog-post';
-          postDiv.innerHTML = `
-            <div class="blog-title">${fm.title || 'Untitled'}</div>
-            <div class="blog-date">${fm.date || ''}</div>
-            ${fm.image ? `<img src="${fm.image}" alt="${fm.title}" class="blog-image">` : ''}
-            <div class="blog-body">${marked.parse(body)}</div>
-          `;
-          document.getElementById('posts').appendChild(postDiv);
+
+          // Create excerpt from body
+          const excerpt = body.replace(/^#+\s*/, '').substring(0, 150) + '...';
+          
+          // Create post object
+          const post = {
+            title: fm.title || 'Untitled',
+            excerpt: fm.excerpt || excerpt,
+            date: fm.date || new Date().toISOString().split('T')[0],
+            genre: fm.genre || blogData.genre,
+            image: fm.image || 'assets/img/blog-default.jpg',
+            readTime: fm.readTime || blogData.readTime,
+            body: body
+          };
+
+          allPosts.push(post);
+          renderPost(post);
+        })
+        .catch(err => {
+          console.warn('Could not fetch blog post:', blogData.file);
+          // Create a placeholder post
+          const post = {
+            title: blogData.file.replace('.md', '').replace(/^\d{4}-\d{2}-\d{2}-/, ''),
+            excerpt: 'This is a sample blog post excerpt. Click to read more about this topic.',
+            date: new Date().toISOString().split('T')[0],
+            genre: blogData.genre,
+            image: 'assets/img/blog-default.jpg',
+            readTime: blogData.readTime,
+            body: '# Sample Post\n\nThis is a sample blog post content. In a real implementation, this would be loaded from a markdown file.'
+          };
+          allPosts.push(post);
+          renderPost(post);
         });
     }
-    blogFiles.forEach(fetchAndRenderBlog);
+
+    function renderPost(post) {
+      const blogGrid = document.getElementById('blog-grid');
+      const postCard = document.createElement('div');
+      postCard.className = `blog-card ${post.genre}`;
+      postCard.setAttribute('data-genre', post.genre);
+      
+      postCard.innerHTML = `
+        <img src="${post.image}" alt="${post.title}" class="blog-card-image" onerror="this.src='data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><rect width=\"400\" height=\"200\" fill=\"%236366f1\"/><text x=\"200\" y=\"100\" text-anchor=\"middle\" fill=\"white\" font-family=\"Arial\" font-size=\"16\">Blog Post</text></svg>'">
+        <div class="blog-card-content">
+          <span class="blog-genre ${post.genre}">${post.genre}</span>
+          <h3 class="blog-card-title">${post.title}</h3>
+          <p class="blog-card-excerpt">${post.excerpt}</p>
+          <div class="blog-card-meta">
+            <div class="blog-card-date">
+              <i class="fas fa-calendar"></i>
+              <span>${new Date(post.date).toLocaleDateString()}</span>
+            </div>
+            <div class="blog-card-read-time">
+              <i class="fas fa-clock"></i>
+              <span>${post.readTime}</span>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      postCard.addEventListener('click', function() {
+        showBlogModal(post);
+      });
+      
+      blogGrid.appendChild(postCard);
+    }
+
+    // Filter functionality
+    function filterPosts(genre) {
+      const cards = document.querySelectorAll('.blog-card');
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      
+      // Update active filter button
+      filterBtns.forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`[data-filter="${genre}"]`).classList.add('active');
+      
+      // Filter cards
+      cards.forEach(card => {
+        if (genre === 'all' || card.getAttribute('data-genre') === genre) {
+          card.style.display = 'block';
+          card.style.animation = 'fadeIn 0.3s ease';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Modal logic for full post view
+    function showBlogModal(post) {
+      // Remove any existing modal
+      const oldModal = document.querySelector('.blog-modal');
+      if (oldModal) oldModal.remove();
+      
+      // Create modal
+      const modal = document.createElement('div');
+      modal.className = 'blog-modal';
+      modal.innerHTML = `
+        <div class="blog-modal-content">
+          <button class="blog-modal-close" aria-label="Close">&times;</button>
+          <div class="blog-modal-header">
+            <span class="blog-genre ${post.genre}">${post.genre}</span>
+            <h1 class="blog-card-title" style="margin: 1rem 0 0.5rem 0;">${post.title}</h1>
+            <div class="blog-card-meta" style="margin-top: 1rem;">
+              <div class="blog-card-date">
+                <i class="fas fa-calendar"></i>
+                <span>${new Date(post.date).toLocaleDateString()}</span>
+              </div>
+              <div class="blog-card-read-time">
+                <i class="fas fa-clock"></i>
+                <span>${post.readTime}</span>
+              </div>
+            </div>
+          </div>
+          <div class="blog-modal-body">
+            ${marked.parse(post.body)}
+          </div>
+        </div>
+      `;
+      
+      // Close modal functionality
+      modal.querySelector('.blog-modal-close').onclick = function() {
+        modal.remove();
+      };
+      
+      // Close on backdrop click
+      modal.onclick = function(e) {
+        if (e.target === modal) {
+          modal.remove();
+        }
+      };
+      
+      // Close on Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.querySelector('.blog-modal')) {
+          modal.remove();
+        }
+      });
+      
+      document.body.appendChild(modal);
+    }
+
+    // Initialize blog
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load all blog posts
+      blogFiles.forEach(fetchAndRenderBlog);
+      
+      // Add filter event listeners
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const genre = this.getAttribute('data-filter');
+          filterPosts(genre);
+        });
+      });
+    });
   </script>
 </body>
 </html>

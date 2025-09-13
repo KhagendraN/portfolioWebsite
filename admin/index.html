@@ -1,15 +1,421 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Content Manager</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Admin Panel | Khagendra Neupane</title>
+    <meta name="description" content="Admin panel for managing blog posts">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- CodeMirror for Markdown editing -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .admin-header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .auth-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-section.hidden {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .editor-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .editor-section.hidden {
+            display: none;
+        }
+
+        .editor-tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #e1e5e9;
+        }
+
+        .editor-tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .editor-tab.active {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .editor-content {
+            display: none;
+        }
+
+        .editor-content.active {
+            display: block;
+        }
+
+        .CodeMirror {
+            border: 2px solid #e1e5e9;
+            border-radius: 0.5rem;
+            height: 400px;
+            font-size: 14px;
+        }
+
+        .preview-content {
+            background: #f8f9fa;
+            border: 2px solid #e1e5e9;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            min-height: 400px;
+            overflow-y: auto;
+        }
+
+        .posts-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .posts-section.hidden {
+            display: none;
+        }
+
+        .posts-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .post-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 0.5rem;
+            border: 1px solid #e1e5e9;
+        }
+
+        .post-info h3 {
+            margin-bottom: 0.25rem;
+            color: #333;
+        }
+
+        .post-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .status-message {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 0.5rem;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .user-details h3 {
+            margin-bottom: 0.25rem;
+        }
+
+        .user-details p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 1rem;
+            }
+
+            .admin-header h1 {
+                font-size: 2rem;
+            }
+
+            .editor-tabs {
+                flex-direction: column;
+            }
+
+            .post-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .post-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
 </head>
 <body>
-  <!-- Netlify Identity -->
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1><i class="fas fa-blog"></i> Blog Admin Panel</h1>
+            <p>Manage your blog posts with ease</p>
+        </div>
 
-  <!-- Decap CMS -->
-  <script src="https://unpkg.com/decap-cms@latest/dist/decap-cms.js"></script>
+        <!-- Status Messages -->
+        <div id="status-message" class="status-message"></div>
+
+        <!-- Authentication Section -->
+        <div id="auth-section" class="auth-section">
+            <h2><i class="fab fa-github"></i> GitHub Authentication</h2>
+            <p style="margin-bottom: 1.5rem; color: #666;">
+                Enter your GitHub Personal Access Token to authenticate and manage blog posts.
+                <a href="https://github.com/settings/tokens" target="_blank" style="color: #667eea;">Create a token here</a>
+            </p>
+            
+            <div class="form-group">
+                <label for="github-token">GitHub Personal Access Token</label>
+                <input type="password" id="github-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+            </div>
+            
+            <button id="auth-btn" class="btn">
+                <i class="fas fa-sign-in-alt"></i> Authenticate
+            </button>
+        </div>
+
+        <!-- User Info Section -->
+        <div id="user-info" class="user-info hidden">
+            <img id="user-avatar" src="" alt="User Avatar" class="user-avatar">
+            <div class="user-details">
+                <h3 id="user-name"></h3>
+                <p id="user-login"></p>
+            </div>
+            <button id="logout-btn" class="btn btn-secondary">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+
+        <!-- Editor Section -->
+        <div id="editor-section" class="editor-section hidden">
+            <h2><i class="fas fa-edit"></i> Create New Post</h2>
+            
+            <div class="form-group">
+                <label for="post-title">Post Title</label>
+                <input type="text" id="post-title" placeholder="Enter post title">
+            </div>
+
+            <div class="form-group">
+                <label for="post-filename">Filename</label>
+                <input type="text" id="post-filename" placeholder="2024-01-15-my-post-title.md">
+            </div>
+
+            <div class="form-group">
+                <label for="post-genre">Genre</label>
+                <select id="post-genre">
+                    <option value="tech">Tech</option>
+                    <option value="tutorial">Tutorial</option>
+                    <option value="lifestyle">Lifestyle</option>
+                    <option value="news">News</option>
+                    <option value="personal">Personal</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="post-excerpt">Excerpt</label>
+                <textarea id="post-excerpt" rows="3" placeholder="Brief description of the post"></textarea>
+            </div>
+
+            <div class="editor-tabs">
+                <button class="editor-tab active" data-tab="write">Write</button>
+                <button class="editor-tab" data-tab="preview">Preview</button>
+            </div>
+
+            <div id="write-content" class="editor-content active">
+                <textarea id="markdown-editor" placeholder="Write your markdown content here..."></textarea>
+            </div>
+
+            <div id="preview-content" class="editor-content">
+                <div class="preview-content" id="markdown-preview"></div>
+            </div>
+
+            <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                <button id="publish-btn" class="btn">
+                    <i class="fas fa-paper-plane"></i> Publish Post
+                </button>
+                <button id="save-draft-btn" class="btn btn-secondary">
+                    <i class="fas fa-save"></i> Save Draft
+                </button>
+            </div>
+        </div>
+
+        <!-- Posts Management Section -->
+        <div id="posts-section" class="posts-section hidden">
+            <h2><i class="fas fa-list"></i> Manage Posts</h2>
+            <div id="posts-list" class="posts-list">
+                <!-- Posts will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/markdown/markdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+    <script type="module" src="js/admin.js"></script>
 </body>
 </html>
