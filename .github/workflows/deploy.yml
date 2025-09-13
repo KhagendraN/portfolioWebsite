@@ -63,16 +63,16 @@ jobs:
         run: |
           # For Astro (uncomment if using Astro)
           # npm run build
-          
+
           # For static HTML/CSS/JS (current setup)
           echo "Static site build completed"
-          
+
           # Create dist directory if it doesn't exist
           mkdir -p dist
-          
-          # Copy all files to dist (for static sites)
-          cp -r . dist/
-          
+
+          # Copy only needed files to dist (avoid copying dist into itself)
+          cp -r blog admin index.html css js assets dist/
+
           # Remove unnecessary files from dist
           rm -rf dist/.git
           rm -rf dist/.github
