@@ -343,14 +343,18 @@ class BlogAdmin {
     }
 
     showMessage(message, type) {
-        const statusMessage = document.getElementById('status-message');
-        statusMessage.textContent = message;
-        statusMessage.className = `status-message ${type}`;
-        statusMessage.style.display = 'block';
-
+        // Use #auth-message for authentication section, fallback to #status-message
+        let msgElem = document.getElementById('auth-message');
+        if (!msgElem || msgElem.offsetParent === null) {
+            msgElem = document.getElementById('status-message');
+        }
+        if (!msgElem) return;
+        msgElem.textContent = message;
+        msgElem.className = `${type}`;
+        msgElem.style.display = 'block';
         // Auto-hide after 5 seconds
         setTimeout(() => {
-            statusMessage.style.display = 'none';
+            msgElem.style.display = 'none';
         }, 5000);
     }
 }
