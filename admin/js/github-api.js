@@ -16,7 +16,7 @@ export async function pushMarkdownToRepo(
 ) {
   const {
     owner = null,
-    repo = 'mywebsite',
+  repo = 'portfolioWebsite',
     branch = 'main',
     commitMessage = `Add blog post: ${filename}`,
     frontmatter = {}
@@ -83,7 +83,7 @@ export async function pushMarkdownToRepo(
 export async function getBlogPosts(accessToken, options = {}) {
   const {
     owner = null,
-    repo = 'mywebsite',
+  repo = 'portfolioWebsite',
     branch = 'main'
   } = options;
 
@@ -124,7 +124,7 @@ export async function getBlogPosts(accessToken, options = {}) {
 export async function deleteBlogPost(filename, accessToken, options = {}) {
   const {
     owner = null,
-    repo = 'mywebsite',
+  repo = 'portfolioWebsite',
     branch = 'main',
     commitMessage = `Delete blog post: ${filename}`
   } = options;
@@ -201,7 +201,7 @@ export async function validateGitHubToken(accessToken) {
 export async function checkRepositoryPermissions(accessToken, options = {}) {
   const {
     owner = null,
-    repo = 'mywebsite'
+  repo = 'portfolioWebsite'
   } = options;
 
   try {
