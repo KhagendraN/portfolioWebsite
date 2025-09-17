@@ -384,32 +384,14 @@
     </div>
   </main>
   <script>
-    // Enhanced blog posts with genre support
-    const blogFiles = [
-      {
-        file: '2025-09-13-sample-post.md',
-        genre: 'tech',
-        readTime: '5 min read'
-      },
-      {
-        file: '2025-09-14-networking-tips.md',
-        genre: 'tutorial',
-        readTime: '8 min read'
-      },
-      {
-        file: '2025-09-15-ai-trends.md',
-        genre: 'news',
-        readTime: '6 min read'
-      },
-      {
-        file: '2025-09-16-student-life.md',
-        genre: 'personal',
-        readTime: '4 min read'
-      }
-    ];
-
+    // Dynamically fetch blog post list from blog/index.json
     let allPosts = [];
     let filteredPosts = [];
+    function fetchBlogIndex() {
+      return fetch('blog/index.json')
+        .then(res => res.json())
+        .catch(() => []);
+    }
 
     // Theme toggle functionality
     (function() {
@@ -621,9 +603,25 @@
 
     // Initialize blog
     document.addEventListener('DOMContentLoaded', function() {
-      // Load all blog posts
-      blogFiles.forEach(fetchAndRenderBlog);
-      
+      fetchBlogIndex().then(posts => {
+        allPosts = [];
+        document.getElementById('blog-grid').innerHTML = '';
+        posts.forEach(post => {
+          // Fetch markdown for each post to get body (for modal)
+          fetch('blog/' + post.file)
+            .then(res => res.text())
+            .then(md => {
+              post.body = md.replace(/^---[\s\S]*?---/, '').trim();
+              allPosts.push(post);
+              renderPost(post);
+            })
+            .catch(() => {
+              post.body = '# Error loading post';
+              allPosts.push(post);
+              renderPost(post);
+            });
+        });
+      });
       // Add filter event listeners
       document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', function() {
