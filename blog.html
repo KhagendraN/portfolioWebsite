@@ -384,14 +384,9 @@
     </div>
   </main>
   <script>
-    // Dynamically fetch blog post list from blog/index.json
-    let allPosts = [];
-    let filteredPosts = [];
-    function fetchBlogIndex() {
-      return fetch('blog/index.json')
-        .then(res => res.json())
-        .catch(() => []);
-    }
+
+  let allPosts = [];
+  let filteredPosts = [];
 
     // Theme toggle functionality
     (function() {
@@ -603,25 +598,19 @@
 
     // Initialize blog
     document.addEventListener('DOMContentLoaded', function() {
-      fetchBlogIndex().then(posts => {
-        allPosts = [];
-        document.getElementById('blog-grid').innerHTML = '';
-        posts.forEach(post => {
-          // Fetch markdown for each post to get body (for modal)
-          fetch('blog/' + post.file)
-            .then(res => res.text())
-            .then(md => {
-              post.body = md.replace(/^---[\s\S]*?---/, '').trim();
-              allPosts.push(post);
-              renderPost(post);
-            })
-            .catch(() => {
-              post.body = '# Error loading post';
-              allPosts.push(post);
-              renderPost(post);
-            });
+      // Fetch blog/posts.json and render posts
+      fetch('blog/posts.json')
+        .then(res => res.json())
+        .then(posts => {
+          allPosts = [];
+          posts.forEach(postMeta => {
+            fetchAndRenderBlog(postMeta);
+          });
+        })
+        .catch(err => {
+          console.warn('Could not load posts.json:', err);
         });
-      });
+
       // Add filter event listeners
       document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', function() {
