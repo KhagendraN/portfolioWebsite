@@ -67,6 +67,11 @@ jobs:
           # For static HTML/CSS/JS (current setup)
           echo "Static site build completed"
 
+          # Generate blog/posts.json for dynamic blog listing
+          if [ -f generate-blog-index.js ]; then
+            node generate-blog-index.js
+          fi
+
           # Create dist directory if it doesn't exist
           mkdir -p dist
 
