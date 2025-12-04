@@ -72,7 +72,16 @@ function switchTab(tab) {
     document.getElementById('posts-view').classList.add('hidden');
     document.getElementById('projects-view').classList.add('hidden');
     document.getElementById('experiences-view').classList.add('hidden');
+    document.getElementById('profile-view').classList.add('hidden');
     document.getElementById(`${tab}-view`).classList.remove('hidden');
+
+    // Hide/show New button based on tab
+    const newBtn = document.getElementById('new-btn');
+    if (tab === 'profile') {
+        newBtn.style.display = 'none';
+    } else {
+        newBtn.style.display = 'inline-block';
+    }
 
     loadData();
 }
@@ -84,6 +93,8 @@ function loadData() {
         loadProjects();
     } else if (activeTab === 'experiences') {
         loadExperiences();
+    } else if (activeTab === 'profile') {
+        loadProfile();
     }
 }
 
@@ -542,6 +553,7 @@ function setupEventListeners() {
     document.getElementById('tab-posts').addEventListener('click', () => switchTab('posts'));
     document.getElementById('tab-projects').addEventListener('click', () => switchTab('projects'));
     document.getElementById('tab-experiences').addEventListener('click', () => switchTab('experiences'));
+    document.getElementById('tab-profile').addEventListener('click', () => switchTab('profile'));
 
     // New Button
     document.getElementById('new-btn').addEventListener('click', () => {

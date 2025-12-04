@@ -532,6 +532,39 @@
         </div>
     </footer>
     <script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
+
+    <!-- Load Profile Data -->
+    <script type="module">
+        import { fetchProfile } from './js/profile-api.js';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const profile = await fetchProfile();
+                if (profile) {
+                    // Update hero image
+                    if (profile.hero_image_url) {
+                        const heroImg = document.querySelector('.hero__img');
+                        if (heroImg) {
+                            heroImg.src = profile.hero_image_url;
+                        }
+                    }
+
+                    // Update CV links
+                    if (profile.cv_url) {
+                        const cvLinks = document.querySelectorAll('a[download]');
+                        cvLinks.forEach(link => {
+                            if (link.href.includes('khagendra_cv.pdf')) {
+                                link.href = profile.cv_url;
+                            }
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error('Error loading profile:', err);
+            }
+        });
+    </script>
+
     <!--===== SCROLL REVEAL =====-->
     <script src="https://unpkg.com/scrollreveal"></script>
     <!--===== MAIN JS =====-->

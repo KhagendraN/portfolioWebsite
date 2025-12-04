@@ -48,6 +48,7 @@
                         <button id="tab-posts" class="tab-btn active">Blog Posts</button>
                         <button id="tab-projects" class="tab-btn">Projects</button>
                         <button id="tab-experiences" class="tab-btn">Experience</button>
+                        <button id="tab-profile" class="tab-btn">Profile</button>
                     </div>
                     <div class="action-controls">
                         <button id="new-btn" class="button"><i class="fas fa-plus"></i> New</button>
@@ -75,6 +76,44 @@
                     <div class="posts-list" id="experiences-list">
                         <!-- Experiences will be rendered here -->
                         <div class="loading">Loading experiences...</div>
+                    </div>
+                </div>
+
+                <div id="profile-view" class="hidden">
+                    <div class="profile-settings">
+                        <h3>Profile Settings</h3>
+                        <form id="profile-form" class="editor-form">
+                            <div class="form-group">
+                                <label for="profile-hero-image">Hero Image (Profile Picture)</label>
+                                <div class="image-input-group">
+                                    <input type="text" id="profile-hero-image" placeholder="https://..." readonly>
+                                    <input type="file" id="profile-hero-upload" accept="image/*" style="display: none;">
+                                    <button type="button" id="profile-hero-upload-btn"
+                                        class="button button--outline">Upload</button>
+                                </div>
+                                <div id="profile-hero-preview" style="margin-top: 1rem;">
+                                    <img id="profile-hero-preview-img" src="" alt="Hero Preview"
+                                        style="max-width: 200px; border-radius: 50%; display: none;">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="profile-cv">CV (PDF)</label>
+                                <div class="image-input-group">
+                                    <input type="text" id="profile-cv" placeholder="https://..." readonly>
+                                    <input type="file" id="profile-cv-upload" accept=".pdf" style="display: none;">
+                                    <button type="button" id="profile-cv-upload-btn"
+                                        class="button button--outline">Upload</button>
+                                </div>
+                                <div id="profile-cv-status"
+                                    style="margin-top: 0.5rem; font-size: 0.9rem; color: #4a4e69;"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <button type="button" id="profile-save-btn" class="button">Save Profile</button>
+                                <span id="profile-save-status" style="margin-left: 1rem;"></span>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </main>
