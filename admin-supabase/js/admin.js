@@ -300,6 +300,7 @@ window.editProject = async (id) => {
     document.getElementById('project-editor-title').textContent = 'Edit Project';
 };
 
+
 function fillProjectEditor(p) {
     document.getElementById('project-title').value = p.title || '';
     document.getElementById('project-desc').value = p.description || '';
@@ -512,6 +513,110 @@ window.deleteExperience = async (id) => {
     }
 };
 
+// Profile Logic
+async function loadProfile() {
+    const { data: profile, error } = await supabase
+        .from('profile')
+        .select('*')
+        .single();
+
+    if (error) {
+        console.error('Error loading profile:', error);
+        return;
+    }
+
+    if (profile) {
+        // Hero section
+        document.getElementById('profile-hero-image').value = profile.hero_image_url || '';
+        if (profile.hero_image_url) {
+            const previewImg = document.getElementById('profile-hero-preview-img');
+            previewImg.src = profile.hero_image_url;
+            previewImg.style.display = 'block';
+        }
+
+        // About section
+        document.getElementById('profile-about-image').value = profile.about_image_url || '';
+        document.getElementById('profile-about-subtitle').value = profile.about_subtitle || '';
+        document.getElementById('profile-about-text').value = profile.about_text || '';
+        if (profile.about_image_url) {
+            const aboutPreviewImg = document.getElementById('profile-about-preview-img');
+            aboutPreviewImg.src = profile.about_image_url;
+            aboutPreviewImg.style.display = 'block';
+        }
+
+        // CV section
+        document.getElementById('profile-cv').value = profile.cv_url || '';
+        if (profile.cv_url) {
+            document.getElementById('profile-cv-status').textContent = 'Current CV uploaded';
+        }
+    }
+}
+
+async function saveProfile() {
+    const saveBtn = document.getElementById('profile-save-btn');
+    const statusSpan = document.getElementById('profile-save-status');
+
+    saveBtn.disabled = true;
+    statusSpan.textContent = 'Saving...';
+
+    const profileData = {
+        hero_image_url: document.getElementById('profile-hero-image').value,
+        about_image_url: document.getElementById('profile-about-image').value,
+        about_subtitle: document.getElementById('profile-about-subtitle').value,
+        about_text: document.getElementById('profile-about-text').value,
+        cv_url: document.getElementById('profile-cv').value,
+        updated_at: new Date().toISOString()
+    };
+
+    // Check if profile exists
+    const { data: existing } = await supabase
+        .from('profile')
+        .select('id')
+        .single();
+
+    let error;
+    if (existing) {
+        const result = await supabase
+            .from('profile')
+            .update(profileData)
+            .eq('id', existing.id);
+        error = result.error;
+    } else {
+        const result = await supabase
+            .from('profile')
+            .insert(profileData);
+        error = result.error;
+    }
+
+    saveBtn.disabled = false;
+    if (error) {
+        statusSpan.textContent = 'Error saving!';
+        statusSpan.style.color = 'red';
+        console.error(error);
+    } else {
+        statusSpan.textContent = 'Saved!';
+        statusSpan.style.color = 'green';
+        setTimeout(() => { statusSpan.textContent = ''; }, 2000);
+    }
+}
+
+async function uploadFile(file, bucket = 'portfolio-assets') {
+    const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
+    const { data, error } = await supabase.storage
+        .from(bucket)
+        .upload(fileName, file);
+
+    if (error) {
+        alert('Error uploading file: ' + error.message);
+        return null;
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+        .from(bucket)
+        .getPublicUrl(fileName);
+
+    return publicUrl;
+}
 
 // Image Upload
 async function uploadImage(file) {
@@ -607,6 +712,76 @@ function setupEventListeners() {
         loadExperiences();
     });
     document.getElementById('experience-save-btn').addEventListener('click', saveExperience);
+
+    // Profile Settings
+    document.getElementById('profile-save-btn').addEventListener('click', saveProfile);
+
+    const heroUploadBtn = document.getElementById('profile-hero-upload-btn');
+    const heroFileInput = document.getElementById('profile-hero-upload');
+    const heroUrlInput = document.getElementById('profile-hero-image');
+    const heroPreviewImg = document.getElementById('profile-hero-preview-img');
+
+    heroUploadBtn.addEventListener('click', () => heroFileInput.click());
+    heroFileInput.addEventListener('change', async (e) => {
+        if (e.target.files.length > 0) {
+            heroUploadBtn.textContent = 'Uploading...';
+            heroUploadBtn.disabled = true;
+            const url = await uploadFile(e.target.files[0]);
+            if (url) {
+                heroUrlInput.value = url;
+                heroPreviewImg.src = url;
+                heroPreviewImg.style.display = 'block';
+            }
+            heroUploadBtn.textContent = 'Upload';
+            heroUploadBtn.disabled = false;
+            heroFileInput.value = '';
+        }
+    });
+
+    const aboutUploadBtn = document.getElementById('profile-about-upload-btn');
+    const aboutFileInput = document.getElementById('profile-about-upload');
+    const aboutUrlInput = document.getElementById('profile-about-image');
+    const aboutPreviewImg = document.getElementById('profile-about-preview-img');
+
+    aboutUploadBtn.addEventListener('click', () => aboutFileInput.click());
+    aboutFileInput.addEventListener('change', async (e) => {
+        if (e.target.files.length > 0) {
+            aboutUploadBtn.textContent = 'Uploading...';
+            aboutUploadBtn.disabled = true;
+            const url = await uploadFile(e.target.files[0]);
+            if (url) {
+                aboutUrlInput.value = url;
+                aboutPreviewImg.src = url;
+                aboutPreviewImg.style.display = 'block';
+            }
+            aboutUploadBtn.textContent = 'Upload';
+            aboutUploadBtn.disabled = false;
+            aboutFileInput.value = '';
+        }
+    });
+
+    const cvUploadBtn = document.getElementById('profile-cv-upload-btn');
+    const cvFileInput = document.getElementById('profile-cv-upload');
+    const cvUrlInput = document.getElementById('profile-cv');
+    const cvStatus = document.getElementById('profile-cv-status');
+
+    cvUploadBtn.addEventListener('click', () => cvFileInput.click());
+    cvFileInput.addEventListener('change', async (e) => {
+        if (e.target.files.length > 0) {
+            cvUploadBtn.textContent = 'Uploading...';
+            cvUploadBtn.disabled = true;
+            const url = await uploadFile(e.target.files[0]);
+            if (url) {
+                cvUrlInput.value = url;
+                cvStatus.textContent = 'CV uploaded successfully!';
+                cvStatus.style.color = 'green';
+            }
+            cvUploadBtn.textContent = 'Upload';
+            cvUploadBtn.disabled = false;
+            cvFileInput.value = '';
+        }
+    });
+
     // Image Upload (Blog)
     const uploadBtn = document.getElementById('upload-btn');
     const fileInput = document.getElementById('image-upload');
