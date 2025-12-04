@@ -4,14 +4,16 @@ import { supabase } from '../../js/supabase-config.js';
 let currentUser = null;
 let currentPostId = null;
 let currentProjectId = null;
-let activeTab = 'posts'; // 'posts' or 'projects'
+let currentExperienceId = null;
+let activeTab = 'posts'; // 'posts', 'projects', or 'experiences'
 
 // DOM Elements
 const screens = {
     login: document.getElementById('login-screen'),
     dashboard: document.getElementById('dashboard-screen'),
     editor: document.getElementById('editor-screen'),
-    projectEditor: document.getElementById('project-editor-screen')
+    projectEditor: document.getElementById('project-editor-screen'),
+    experienceEditor: document.getElementById('experience-editor-screen')
 };
 
 // Initialize
@@ -69,6 +71,7 @@ function switchTab(tab) {
 
     document.getElementById('posts-view').classList.add('hidden');
     document.getElementById('projects-view').classList.add('hidden');
+    document.getElementById('experiences-view').classList.add('hidden');
     document.getElementById(`${tab}-view`).classList.remove('hidden');
 
     loadData();
@@ -77,8 +80,10 @@ function switchTab(tab) {
 function loadData() {
     if (activeTab === 'posts') {
         loadPosts();
-    } else {
+    } else if (activeTab === 'projects') {
         loadProjects();
+    } else if (activeTab === 'experiences') {
+        loadExperiences();
     }
 }
 
@@ -362,6 +367,140 @@ window.deleteProject = async (id) => {
     }
 };
 
+// Experiences Logic
+async function loadExperiences() {
+    const list = document.getElementById('experiences-list');
+    list.innerHTML = '<div class="loading">Loading experiences...</div>';
+
+    const { data: experiences, error } = await supabase
+        .from('experiences')
+        .select('*')
+        .order('display_order', { ascending: true })
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        list.innerHTML = `<div class="error-msg">Error loading experiences: ${error.message}</div>`;
+        return;
+    }
+
+    if (experiences.length === 0) {
+        list.innerHTML = '<div class="no-posts">No experiences found. Create one!</div>';
+        return;
+    }
+
+    list.innerHTML = experiences.map(e => `
+        <div class="post-item">
+            <div class="post-info">
+                <h3>${e.role}</h3>
+                <div class="post-meta">
+                    <span class="status-badge ${e.type === 'education' ? 'status-published' : 'status-draft'}">
+                        ${e.type === 'education' ? 'Education' : 'Experience'}
+                    </span>
+                    <span>${e.date_range}</span>
+                    <span>Order: ${e.display_order}</span>
+                </div>
+            </div>
+            <div class="post-actions">
+                <button class="btn-icon" onclick="window.editExperience('${e.id}')" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-icon btn-delete" onclick="window.deleteExperience('${e.id}')" title="Delete">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+window.editExperience = async (id) => {
+    currentExperienceId = id;
+    const { data: experience, error } = await supabase
+        .from('experiences')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+    if (error) {
+        alert('Error loading experience');
+        return;
+    }
+
+    fillExperienceEditor(experience);
+    showScreen('experienceEditor');
+    document.getElementById('experience-editor-title').textContent = 'Edit Experience';
+};
+
+function fillExperienceEditor(e) {
+    document.getElementById('experience-type').value = e.type || 'education';
+    document.getElementById('experience-date').value = e.date_range || '';
+    document.getElementById('experience-role').value = e.role || '';
+    document.getElementById('experience-org').value = e.organization || '';
+    document.getElementById('experience-desc').value = e.description || '';
+    document.getElementById('experience-order').value = e.display_order || 0;
+}
+
+async function saveExperience() {
+    const saveBtn = document.getElementById('experience-save-btn');
+    const statusSpan = document.getElementById('experience-save-status');
+
+    saveBtn.disabled = true;
+    statusSpan.textContent = 'Saving...';
+
+    const experienceData = {
+        type: document.getElementById('experience-type').value,
+        date_range: document.getElementById('experience-date').value,
+        role: document.getElementById('experience-role').value,
+        organization: document.getElementById('experience-org').value,
+        description: document.getElementById('experience-desc').value,
+        display_order: parseInt(document.getElementById('experience-order').value) || 0,
+        author_id: currentUser.id
+    };
+
+    let error;
+    if (currentExperienceId) {
+        const result = await supabase
+            .from('experiences')
+            .update(experienceData)
+            .eq('id', currentExperienceId);
+        error = result.error;
+    } else {
+        const result = await supabase
+            .from('experiences')
+            .insert(experienceData);
+        error = result.error;
+    }
+
+    saveBtn.disabled = false;
+    if (error) {
+        statusSpan.textContent = 'Error saving!';
+        statusSpan.style.color = 'red';
+        console.error(error);
+    } else {
+        statusSpan.textContent = 'Saved!';
+        statusSpan.style.color = 'green';
+        setTimeout(() => { statusSpan.textContent = ''; }, 2000);
+        if (!currentExperienceId) {
+            showScreen('dashboard');
+            loadExperiences();
+        }
+    }
+}
+
+window.deleteExperience = async (id) => {
+    if (!confirm('Are you sure you want to delete this experience?')) return;
+
+    const { error } = await supabase
+        .from('experiences')
+        .delete()
+        .eq('id', id);
+
+    if (error) {
+        alert('Error deleting experience: ' + error.message);
+    } else {
+        loadExperiences();
+    }
+};
+
 
 // Image Upload
 async function uploadImage(file) {
@@ -383,6 +522,11 @@ async function uploadImage(file) {
 }
 
 // Event Listeners
+function updatePreview() {
+    const content = document.getElementById('post-content').value;
+    document.getElementById('markdown-preview').innerHTML = marked.parse(content);
+}
+
 function setupEventListeners() {
     // Login
     document.getElementById('login-form').addEventListener('submit', (e) => {
@@ -397,6 +541,7 @@ function setupEventListeners() {
     // Dashboard Tabs
     document.getElementById('tab-posts').addEventListener('click', () => switchTab('posts'));
     document.getElementById('tab-projects').addEventListener('click', () => switchTab('projects'));
+    document.getElementById('tab-experiences').addEventListener('click', () => switchTab('experiences'));
 
     // New Button
     document.getElementById('new-btn').addEventListener('click', () => {
@@ -405,11 +550,16 @@ function setupEventListeners() {
             fillEditor({});
             showScreen('editor');
             document.getElementById('editor-title').textContent = 'New Post';
-        } else {
+        } else if (activeTab === 'projects') {
             currentProjectId = null;
             fillProjectEditor({});
             showScreen('projectEditor');
             document.getElementById('project-editor-title').textContent = 'New Project';
+        } else if (activeTab === 'experiences') {
+            currentExperienceId = null;
+            fillExperienceEditor({});
+            showScreen('experienceEditor');
+            document.getElementById('experience-editor-title').textContent = 'New Experience';
         }
     });
 
@@ -438,6 +588,13 @@ function setupEventListeners() {
     });
     document.getElementById('project-save-btn').addEventListener('click', saveProject);
 
+
+    // Experience Editor
+    document.getElementById('experience-back-btn').addEventListener('click', () => {
+        showScreen('dashboard');
+        loadExperiences();
+    });
+    document.getElementById('experience-save-btn').addEventListener('click', saveExperience);
     // Image Upload (Blog)
     const uploadBtn = document.getElementById('upload-btn');
     const fileInput = document.getElementById('image-upload');
@@ -485,8 +642,5 @@ function setupEventListeners() {
         }
     });
 
-    function updatePreview() {
-        const content = document.getElementById('post-content').value;
-        document.getElementById('markdown-preview').innerHTML = marked.parse(content);
-    }
+
 }

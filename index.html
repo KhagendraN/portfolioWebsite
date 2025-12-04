@@ -367,7 +367,7 @@
                 if (!modalTemplate) return;
 
                 const modal = document.createElement('div');
-                modal.className = 'project__modal';
+                modal.className = 'project__modal active';
                 const content = modalTemplate.querySelector('.project__modal-content').cloneNode(true);
 
                 content.querySelector('.project__modal-img').src = p.image_url || 'assets/img/blog-default.jpg';
@@ -421,40 +421,51 @@
         <!--===== EXPERIENCE / TIMELINE SECTION =====-->
         <section class="timeline section" id="timeline">
             <h2 class="section-title">Experience & Timeline</h2>
-            <div class="timeline__container">
-                <div class="timeline__item" data-type="education">
-                    <div class="timeline__date">2024 - Present</div>
-                    <div class="timeline__content">
-                        <h3 class="timeline__role">Bachelor of Engineering (Electronics, Communication & Information)
-                        </h3>
-                        <p class="timeline__desc">Tribhuvan University - Pulchowk Campus. Expected Graduation: 2028.</p>
-                    </div>
-                </div>
-                <div class="timeline__item" data-type="education">
-                    <div class="timeline__date">2022 - 2024</div>
-                    <div class="timeline__content">
-                        <h3 class="timeline__role">+2 Science</h3>
-                        <p class="timeline__desc">URBANA School of Science. GPA: 3.92. Graduated: 2024.</p>
-                    </div>
-                </div>
-                <div class="timeline__item" data-type="experience">
-                    <div class="timeline__date">2024 - Present</div>
-                    <div class="timeline__content">
-                        <h3 class="timeline__role">GitHub Projects Contributor</h3>
-                        <p class="timeline__desc">Actively working on open-source projects hosted on GitHub.
-                            Collaborating with developers on code, documentation, and issue tracking.</p>
-                    </div>
-                </div>
-                <div class="timeline__item" data-type="experience">
-                    <div class="timeline__date">2024 - Present</div>
-                    <div class="timeline__content">
-                        <h3 class="timeline__role">Class Representative - BEI081</h3>
-                        <p class="timeline__desc">Liaison between faculty and students for effective communication.
-                            Assisted in resolving student concerns and organizing events.</p>
-                    </div>
-                </div>
+            <div class="timeline__container" id="timeline-container">
+                <div style="text-align: center; color: var(--second-color);">Loading experiences...</div>
             </div>
+
+            <!-- Experience Logic -->
+            <script type="module">
+                import { fetchExperiences } from './js/experience-api.js';
+
+                document.addEventListener('DOMContentLoaded', async () => {
+                    const container = document.getElementById('timeline-container');
+
+                    try {
+                        const experiences = await fetchExperiences();
+                        container.innerHTML = '';
+
+                        if (experiences.length === 0) {
+                            container.innerHTML = '<div style="text-align: center;">No experiences found.</div>';
+                            return;
+                        }
+
+                        // Render each experience
+                        experiences.forEach(exp => {
+                            const item = document.createElement('div');
+                            item.className = 'timeline__item';
+                            item.setAttribute('data-type', exp.type);
+
+                            item.innerHTML = `
+                                <div class="timeline__date">${exp.date_range}</div>
+                                <div class="timeline__content">
+                                    <h3 class="timeline__role">${exp.role}</h3>
+                                    <p class="timeline__desc">${exp.description}</p>
+                                </div>
+                            `;
+
+                            container.appendChild(item);
+                        });
+
+                    } catch (err) {
+                        console.error('Error loading experiences:', err);
+                        container.innerHTML = '<div style="text-align: center; color: red;">Error loading experiences.</div>';
+                    }
+                });
+            </script>
         </section>
+
         <!-- SVG Wave Divider -->
         <div class="section-divider" aria-hidden="true">
             <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg"

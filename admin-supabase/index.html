@@ -20,11 +20,11 @@
                 <form id="login-form">
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" required>
+                        <input type="email" id="email" required autocomplete="username">
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" required>
+                        <input type="password" id="password" required autocomplete="current-password">
                     </div>
                     <button type="submit" class="button">Login</button>
                     <div id="login-error" class="error-msg"></div>
@@ -35,7 +35,7 @@
         <!-- Dashboard Screen -->
         <div id="dashboard-screen" class="admin-screen hidden">
             <header class="admin-header">
-                <h1>Blog Dashboard</h1>
+                <h1>Admin Dashboard</h1>
                 <div class="header-actions">
                     <span id="user-email"></span>
                     <button id="logout-btn" class="button button--outline">Logout</button>
@@ -47,6 +47,7 @@
                     <div class="tab-controls">
                         <button id="tab-posts" class="tab-btn active">Blog Posts</button>
                         <button id="tab-projects" class="tab-btn">Projects</button>
+                        <button id="tab-experiences" class="tab-btn">Experience</button>
                     </div>
                     <div class="action-controls">
                         <button id="new-btn" class="button"><i class="fas fa-plus"></i> New</button>
@@ -67,6 +68,13 @@
                     <div class="posts-list" id="projects-list">
                         <!-- Projects will be rendered here -->
                         <div class="loading">Loading projects...</div>
+                    </div>
+                </div>
+
+                <div id="experiences-view" class="hidden">
+                    <div class="posts-list" id="experiences-list">
+                        <!-- Experiences will be rendered here -->
+                        <div class="loading">Loading experiences...</div>
                     </div>
                 </div>
             </main>
@@ -210,6 +218,58 @@
                             <input type="checkbox" id="project-pinned">
                             Pinned (Show on main page)
                         </label>
+                    </div>
+                </form>
+            </main>
+        </div>
+
+        <!-- Experience Editor Screen -->
+        <div id="experience-editor-screen" class="admin-screen hidden">
+            <header class="admin-header">
+                <div class="header-left">
+                    <button id="experience-back-btn" class="button button--outline"><i class="fas fa-arrow-left"></i>
+                        Back</button>
+                    <h1 id="experience-editor-title">New Experience</h1>
+                </div>
+                <div class="header-actions">
+                    <span id="experience-save-status"></span>
+                    <button id="experience-save-btn" class="button">Save</button>
+                </div>
+            </header>
+
+            <main class="admin-main editor-layout">
+                <form id="experience-form" class="editor-form">
+                    <div class="form-group">
+                        <label for="experience-type">Type</label>
+                        <select id="experience-type" required>
+                            <option value="education">Education</option>
+                            <option value="experience">Experience</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="experience-date">Date Range</label>
+                        <input type="text" id="experience-date" placeholder="e.g. 2024 - Present" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="experience-role">Role/Title</label>
+                        <input type="text" id="experience-role" placeholder="e.g. Software Engineer" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="experience-org">Organization (Optional)</label>
+                        <input type="text" id="experience-org" placeholder="e.g. Company Name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="experience-desc">Description</label>
+                        <textarea id="experience-desc" rows="5" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="experience-order">Display Order</label>
+                        <input type="number" id="experience-order" value="0" min="0">
                     </div>
                 </form>
             </main>
