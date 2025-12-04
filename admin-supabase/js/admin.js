@@ -3,12 +3,15 @@ import { supabase } from '../../js/supabase-config.js';
 // State
 let currentUser = null;
 let currentPostId = null;
+let currentProjectId = null;
+let activeTab = 'posts'; // 'posts' or 'projects'
 
 // DOM Elements
 const screens = {
     login: document.getElementById('login-screen'),
     dashboard: document.getElementById('dashboard-screen'),
-    editor: document.getElementById('editor-screen')
+    editor: document.getElementById('editor-screen'),
+    projectEditor: document.getElementById('project-editor-screen')
 };
 
 // Initialize
@@ -24,7 +27,7 @@ async function checkAuth() {
         currentUser = session.user;
         showScreen('dashboard');
         document.getElementById('user-email').textContent = currentUser.email;
-        loadPosts();
+        loadData();
     } else {
         showScreen('login');
     }
@@ -34,7 +37,7 @@ async function checkAuth() {
             currentUser = session.user;
             showScreen('dashboard');
             document.getElementById('user-email').textContent = currentUser.email;
-            loadPosts();
+            loadData();
         } else {
             currentUser = null;
             showScreen('login');
@@ -59,7 +62,27 @@ function showScreen(screenName) {
     screens[screenName].classList.remove('hidden');
 }
 
-// Dashboard
+function switchTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`tab-${tab}`).classList.add('active');
+
+    document.getElementById('posts-view').classList.add('hidden');
+    document.getElementById('projects-view').classList.add('hidden');
+    document.getElementById(`${tab}-view`).classList.remove('hidden');
+
+    loadData();
+}
+
+function loadData() {
+    if (activeTab === 'posts') {
+        loadPosts();
+    } else {
+        loadProjects();
+    }
+}
+
+// Blog Posts Logic
 async function loadPosts() {
     const postsList = document.getElementById('posts-list');
     postsList.innerHTML = '<div class="loading">Loading posts...</div>';
@@ -103,7 +126,6 @@ async function loadPosts() {
     `).join('');
 }
 
-// Editor
 window.editPost = async (id) => {
     currentPostId = id;
     const { data: post, error } = await supabase
@@ -200,6 +222,147 @@ window.deletePost = async (id) => {
     }
 };
 
+// Projects Logic
+async function loadProjects() {
+    const list = document.getElementById('projects-list');
+    list.innerHTML = '<div class="loading">Loading projects...</div>';
+
+    const { data: projects, error } = await supabase
+        .from('projects')
+        .select('*')
+        .order('is_pinned', { ascending: false })
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        list.innerHTML = `<div class="error-msg">Error loading projects: ${error.message}</div>`;
+        return;
+    }
+
+    if (projects.length === 0) {
+        list.innerHTML = '<div class="no-posts">No projects found. Create one!</div>';
+        return;
+    }
+
+    list.innerHTML = projects.map(p => `
+        <div class="post-item">
+            <div class="post-info">
+                <h3>${p.title}</h3>
+                <div class="post-meta">
+                    <span class="status-badge ${p.is_pinned ? 'status-published' : 'status-draft'}">
+                        ${p.is_pinned ? 'Pinned' : 'Normal'}
+                    </span>
+                    <span>${(p.tech_stack || []).join(', ')}</span>
+                </div>
+            </div>
+            <div class="post-actions">
+                <button class="btn-icon" onclick="window.editProject('${p.id}')" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-icon btn-delete" onclick="window.deleteProject('${p.id}')" title="Delete">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+window.editProject = async (id) => {
+    currentProjectId = id;
+    const { data: project, error } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+    if (error) {
+        alert('Error loading project');
+        return;
+    }
+
+    fillProjectEditor(project);
+    showScreen('projectEditor');
+    document.getElementById('project-editor-title').textContent = 'Edit Project';
+};
+
+function fillProjectEditor(p) {
+    document.getElementById('project-title').value = p.title || '';
+    document.getElementById('project-desc').value = p.description || '';
+    document.getElementById('project-image').value = p.image_url || '';
+    document.getElementById('project-github').value = p.github_url || '';
+    document.getElementById('project-demo').value = p.demo_url || '';
+    document.getElementById('project-tech').value = (p.tech_stack || []).join(', ');
+    document.getElementById('project-pinned').checked = p.is_pinned || false;
+}
+
+async function saveProject() {
+    const saveBtn = document.getElementById('project-save-btn');
+    const statusSpan = document.getElementById('project-save-status');
+
+    saveBtn.disabled = true;
+    statusSpan.textContent = 'Saving...';
+
+    const techStack = document.getElementById('project-tech').value
+        .split(',')
+        .map(t => t.trim())
+        .filter(t => t.length > 0);
+
+    const projectData = {
+        title: document.getElementById('project-title').value,
+        description: document.getElementById('project-desc').value,
+        image_url: document.getElementById('project-image').value,
+        github_url: document.getElementById('project-github').value,
+        demo_url: document.getElementById('project-demo').value,
+        tech_stack: techStack,
+        is_pinned: document.getElementById('project-pinned').checked,
+        author_id: currentUser.id
+    };
+
+    let error;
+    if (currentProjectId) {
+        const result = await supabase
+            .from('projects')
+            .update(projectData)
+            .eq('id', currentProjectId);
+        error = result.error;
+    } else {
+        const result = await supabase
+            .from('projects')
+            .insert(projectData);
+        error = result.error;
+    }
+
+    saveBtn.disabled = false;
+    if (error) {
+        statusSpan.textContent = 'Error saving!';
+        statusSpan.style.color = 'red';
+        console.error(error);
+    } else {
+        statusSpan.textContent = 'Saved!';
+        statusSpan.style.color = 'green';
+        setTimeout(() => { statusSpan.textContent = ''; }, 2000);
+        if (!currentProjectId) {
+            showScreen('dashboard');
+            loadProjects();
+        }
+    }
+}
+
+window.deleteProject = async (id) => {
+    if (!confirm('Are you sure you want to delete this project?')) return;
+
+    const { error } = await supabase
+        .from('projects')
+        .delete()
+        .eq('id', id);
+
+    if (error) {
+        alert('Error deleting project: ' + error.message);
+    } else {
+        loadProjects();
+    }
+};
+
+
 // Image Upload
 async function uploadImage(file) {
     const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
@@ -231,53 +394,83 @@ function setupEventListeners() {
 
     document.getElementById('logout-btn').addEventListener('click', logout);
 
-    // Dashboard
-    document.getElementById('new-post-btn').addEventListener('click', () => {
-        currentPostId = null;
-        fillEditor({});
-        showScreen('editor');
-        document.getElementById('editor-title').textContent = 'New Post';
+    // Dashboard Tabs
+    document.getElementById('tab-posts').addEventListener('click', () => switchTab('posts'));
+    document.getElementById('tab-projects').addEventListener('click', () => switchTab('projects'));
+
+    // New Button
+    document.getElementById('new-btn').addEventListener('click', () => {
+        if (activeTab === 'posts') {
+            currentPostId = null;
+            fillEditor({});
+            showScreen('editor');
+            document.getElementById('editor-title').textContent = 'New Post';
+        } else {
+            currentProjectId = null;
+            fillProjectEditor({});
+            showScreen('projectEditor');
+            document.getElementById('project-editor-title').textContent = 'New Project';
+        }
     });
 
-    document.getElementById('search-posts').addEventListener('input', (e) => {
+    // Search
+    document.getElementById('search-input').addEventListener('input', (e) => {
         const term = e.target.value.toLowerCase();
-        const posts = document.querySelectorAll('.post-item');
-        posts.forEach(post => {
-            const title = post.querySelector('h3').textContent.toLowerCase();
-            post.style.display = title.includes(term) ? 'flex' : 'none';
+        const items = document.querySelectorAll('.post-item');
+        items.forEach(item => {
+            const title = item.querySelector('h3').textContent.toLowerCase();
+            item.style.display = title.includes(term) ? 'flex' : 'none';
         });
     });
 
-    // Editor
+    // Blog Editor
     document.getElementById('back-btn').addEventListener('click', () => {
         showScreen('dashboard');
         loadPosts();
     });
-
     document.getElementById('save-btn').addEventListener('click', savePost);
-
     document.getElementById('post-content').addEventListener('input', updatePreview);
 
-    // Image Upload
+    // Project Editor
+    document.getElementById('project-back-btn').addEventListener('click', () => {
+        showScreen('dashboard');
+        loadProjects();
+    });
+    document.getElementById('project-save-btn').addEventListener('click', saveProject);
+
+    // Image Upload (Blog)
     const uploadBtn = document.getElementById('upload-btn');
     const fileInput = document.getElementById('image-upload');
     const urlInput = document.getElementById('post-image');
 
     uploadBtn.addEventListener('click', () => fileInput.click());
-
     fileInput.addEventListener('change', async (e) => {
         if (e.target.files.length > 0) {
             uploadBtn.textContent = 'Uploading...';
             uploadBtn.disabled = true;
-
             const url = await uploadImage(e.target.files[0]);
-            if (url) {
-                urlInput.value = url;
-            }
-
+            if (url) urlInput.value = url;
             uploadBtn.textContent = 'Upload';
             uploadBtn.disabled = false;
             fileInput.value = '';
+        }
+    });
+
+    // Image Upload (Project)
+    const pUploadBtn = document.getElementById('project-upload-btn');
+    const pFileInput = document.getElementById('project-image-upload');
+    const pUrlInput = document.getElementById('project-image');
+
+    pUploadBtn.addEventListener('click', () => pFileInput.click());
+    pFileInput.addEventListener('change', async (e) => {
+        if (e.target.files.length > 0) {
+            pUploadBtn.textContent = 'Uploading...';
+            pUploadBtn.disabled = true;
+            const url = await uploadImage(e.target.files[0]);
+            if (url) pUrlInput.value = url;
+            pUploadBtn.textContent = 'Upload';
+            pUploadBtn.disabled = false;
+            pFileInput.value = '';
         }
     });
 
@@ -291,9 +484,9 @@ function setupEventListeners() {
                 .replace(/(^-|-$)+/g, '');
         }
     });
-}
 
-function updatePreview() {
-    const content = document.getElementById('post-content').value;
-    document.getElementById('markdown-preview').innerHTML = marked.parse(content);
+    function updatePreview() {
+        const content = document.getElementById('post-content').value;
+        document.getElementById('markdown-preview').innerHTML = marked.parse(content);
+    }
 }

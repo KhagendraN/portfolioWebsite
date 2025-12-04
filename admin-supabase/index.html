@@ -44,21 +44,37 @@
 
             <main class="admin-main">
                 <div class="dashboard-controls">
-                    <button id="new-post-btn" class="button"><i class="fas fa-plus"></i> New Post</button>
-                    <div class="search-box">
-                        <input type="text" id="search-posts" placeholder="Search posts...">
+                    <div class="tab-controls">
+                        <button id="tab-posts" class="tab-btn active">Blog Posts</button>
+                        <button id="tab-projects" class="tab-btn">Projects</button>
+                    </div>
+                    <div class="action-controls">
+                        <button id="new-btn" class="button"><i class="fas fa-plus"></i> New</button>
+                        <div class="search-box">
+                            <input type="text" id="search-input" placeholder="Search...">
+                        </div>
                     </div>
                 </div>
 
-                <div class="posts-list" id="posts-list">
-                    <!-- Posts will be rendered here -->
-                    <div class="loading">Loading posts...</div>
+                <div id="posts-view">
+                    <div class="posts-list" id="posts-list">
+                        <!-- Posts will be rendered here -->
+                        <div class="loading">Loading posts...</div>
+                    </div>
+                </div>
+
+                <div id="projects-view" class="hidden">
+                    <div class="posts-list" id="projects-list">
+                        <!-- Projects will be rendered here -->
+                        <div class="loading">Loading projects...</div>
+                    </div>
                 </div>
             </main>
         </div>
 
-        <!-- Editor Screen -->
+        <!-- Blog Editor Screen -->
         <div id="editor-screen" class="admin-screen hidden">
+            <!-- ... existing blog editor ... -->
             <header class="admin-header">
                 <div class="header-left">
                     <button id="back-btn" class="button button--outline"><i class="fas fa-arrow-left"></i> Back</button>
@@ -72,6 +88,7 @@
 
             <main class="admin-main editor-layout">
                 <form id="post-form" class="editor-form">
+                    <!-- ... existing form fields ... -->
                     <div class="form-group">
                         <label for="post-title">Title</label>
                         <input type="text" id="post-title" required>
@@ -132,6 +149,67 @@
                             <textarea id="post-content"></textarea>
                             <div id="markdown-preview" class="markdown-preview"></div>
                         </div>
+                    </div>
+                </form>
+            </main>
+        </div>
+
+        <!-- Project Editor Screen -->
+        <div id="project-editor-screen" class="admin-screen hidden">
+            <header class="admin-header">
+                <div class="header-left">
+                    <button id="project-back-btn" class="button button--outline"><i class="fas fa-arrow-left"></i>
+                        Back</button>
+                    <h1 id="project-editor-title">New Project</h1>
+                </div>
+                <div class="header-actions">
+                    <span id="project-save-status"></span>
+                    <button id="project-save-btn" class="button">Save</button>
+                </div>
+            </header>
+
+            <main class="admin-main editor-layout">
+                <form id="project-form" class="editor-form">
+                    <div class="form-group">
+                        <label for="project-title">Title</label>
+                        <input type="text" id="project-title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="project-desc">Description</label>
+                        <textarea id="project-desc" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="project-image">Image URL</label>
+                        <div class="image-input-group">
+                            <input type="text" id="project-image" placeholder="https://...">
+                            <input type="file" id="project-image-upload" accept="image/*" style="display: none;">
+                            <button type="button" id="project-upload-btn" class="button button--outline">Upload</button>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="project-github">GitHub URL</label>
+                            <input type="text" id="project-github">
+                        </div>
+                        <div class="form-group">
+                            <label for="project-demo">Demo URL</label>
+                            <input type="text" id="project-demo">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="project-tech">Tech Stack (comma separated)</label>
+                        <input type="text" id="project-tech" placeholder="Python, React, AI">
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="project-pinned">
+                            Pinned (Show on main page)
+                        </label>
                     </div>
                 </form>
             </main>
