@@ -67,16 +67,19 @@ jobs:
           # For static HTML/CSS/JS (current setup)
           echo "Static site build completed"
 
-          # Generate blog/posts.json for dynamic blog listing
-          if [ -f generate-blog-index.js ]; then
-            node generate-blog-index.js
+          # Inject Supabase Secrets (if they exist in GitHub Secrets)
+          # This replaces the placeholders or existing values with the secrets
+          if [ -n "${{ secrets.SUPABASE_URL }}" ]; then
+            sed -i "s|const SUPABASE_URL = .*|const SUPABASE_URL = '${{ secrets.SUPABASE_URL }}';|g" js/supabase-config.js
+            sed -i "s|const SUPABASE_ANON_KEY = .*|const SUPABASE_ANON_KEY = '${{ secrets.SUPABASE_ANON_KEY }}';|g" js/supabase-config.js
           fi
 
           # Create dist directory if it doesn't exist
           mkdir -p dist
 
-          # Copy only needed files to dist (avoid copying dist into itself)
-          cp -r blog admin index.html css js assets dist/
+          # Copy only needed files to dist
+          # We include admin-supabase for the new admin panel
+          cp -r admin-supabase index.html blog.html css js assets dist/
 
           # Remove unnecessary files from dist
           rm -rf dist/.git

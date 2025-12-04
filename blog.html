@@ -383,10 +383,10 @@
       </div>
     </div>
   </main>
-  <script>
+  <script type="module">
+    import { fetchAllPosts, fetchPostBySlug } from './js/blog-api.js';
 
-  let allPosts = [];
-  let filteredPosts = [];
+    let allPosts = [];
 
     // Theme toggle functionality
     (function() {
@@ -440,64 +440,17 @@
       }
     })();
 
-    function fetchAndRenderBlog(blogData) {
-      fetch('blog/' + blogData.file)
-        .then(res => res.text())
-        .then(md => {
-          // Parse frontmatter
-          const fmMatch = md.match(/^---([\s\S]*?)---/);
-          let fm = {};
-          let body = md;
-          if (fmMatch) {
-            fmMatch[1].trim().split('\n').forEach(line => {
-              const [key, ...rest] = line.split(':');
-              fm[key.trim()] = rest.join(':').trim().replace(/^"|"$/g, '');
-            });
-            body = md.replace(fmMatch[0], '').trim();
-          }
-
-          // Create excerpt from body
-          const excerpt = body.replace(/^#+\s*/, '').substring(0, 150) + '...';
-          
-          // Create post object
-          const post = {
-            title: fm.title || 'Untitled',
-            excerpt: fm.excerpt || excerpt,
-            date: fm.date || new Date().toISOString().split('T')[0],
-            genre: fm.genre || blogData.genre,
-            image: fm.image || 'assets/img/blog-default.jpg',
-            readTime: fm.readTime || blogData.readTime,
-            body: body
-          };
-
-          allPosts.push(post);
-          renderPost(post);
-        })
-        .catch(err => {
-          console.warn('Could not fetch blog post:', blogData.file);
-          // Create a placeholder post
-          const post = {
-            title: blogData.file.replace('.md', '').replace(/^\d{4}-\d{2}-\d{2}-/, ''),
-            excerpt: 'This is a sample blog post excerpt. Click to read more about this topic.',
-            date: new Date().toISOString().split('T')[0],
-            genre: blogData.genre,
-            image: 'assets/img/blog-default.jpg',
-            readTime: blogData.readTime,
-            body: '# Sample Post\n\nThis is a sample blog post content. In a real implementation, this would be loaded from a markdown file.'
-          };
-          allPosts.push(post);
-          renderPost(post);
-        });
-    }
-
     function renderPost(post) {
       const blogGrid = document.getElementById('blog-grid');
       const postCard = document.createElement('div');
       postCard.className = `blog-card ${post.genre}`;
       postCard.setAttribute('data-genre', post.genre);
       
+      // Fallback image if none provided
+      const imageUrl = post.image_url || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200"><rect width="400" height="200" fill="%236366f1"/><text x="200" y="100" text-anchor="middle" fill="white" font-family="Arial" font-size="16">Blog Post</text></svg>';
+
       postCard.innerHTML = `
-        <img src="${post.image}" alt="${post.title}" class="blog-card-image" onerror="this.src='data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 200\"><rect width=\"400\" height=\"200\" fill=\"%236366f1\"/><text x=\"200\" y=\"100\" text-anchor=\"middle\" fill=\"white\" font-family=\"Arial\" font-size=\"16\">Blog Post</text></svg>'">
+        <img src="${imageUrl}" alt="${post.title}" class="blog-card-image" onerror="this.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 400 200\'><rect width=\'400\' height=\'200\' fill=\'%236366f1\'/><text x=\'200\' y=\'100\' text-anchor=\'middle\' fill=\'white\' font-family=\'Arial\' font-size=\'16\'>Blog Post</text></svg>'">
         <div class="blog-card-content">
           <span class="blog-genre ${post.genre}">${post.genre}</span>
           <h3 class="blog-card-title">${post.title}</h3>
@@ -505,11 +458,11 @@
           <div class="blog-card-meta">
             <div class="blog-card-date">
               <i class="fas fa-calendar"></i>
-              <span>${new Date(post.date).toLocaleDateString()}</span>
+              <span>${new Date(post.published_at).toLocaleDateString()}</span>
             </div>
             <div class="blog-card-read-time">
               <i class="fas fa-clock"></i>
-              <span>${post.readTime}</span>
+              <span>${post.read_time}</span>
             </div>
           </div>
         </div>
@@ -523,23 +476,32 @@
     }
 
     // Filter functionality
-    function filterPosts(genre) {
-      const cards = document.querySelectorAll('.blog-card');
+    async function filterPosts(genre) {
+      const blogGrid = document.getElementById('blog-grid');
+      blogGrid.innerHTML = '<div style="color: white; text-align: center; grid-column: 1/-1;">Loading...</div>';
+      
       const filterBtns = document.querySelectorAll('.filter-btn');
       
       // Update active filter button
       filterBtns.forEach(btn => btn.classList.remove('active'));
-      document.querySelector(`[data-filter="${genre}"]`).classList.add('active');
+      const activeBtn = document.querySelector(`[data-filter="${genre}"]`);
+      if (activeBtn) activeBtn.classList.add('active');
       
-      // Filter cards
-      cards.forEach(card => {
-        if (genre === 'all' || card.getAttribute('data-genre') === genre) {
-          card.style.display = 'block';
-          card.style.animation = 'fadeIn 0.3s ease';
-        } else {
-          card.style.display = 'none';
+      // Fetch and render posts
+      try {
+        const posts = await fetchAllPosts(genre);
+        blogGrid.innerHTML = '';
+        
+        if (posts.length === 0) {
+          blogGrid.innerHTML = '<div style="color: white; text-align: center; grid-column: 1/-1;">No posts found.</div>';
+          return;
         }
-      });
+
+        posts.forEach(post => renderPost(post));
+      } catch (err) {
+        console.error('Error filtering posts:', err);
+        blogGrid.innerHTML = '<div style="color: white; text-align: center; grid-column: 1/-1;">Error loading posts. Please try again later.</div>';
+      }
     }
 
     // Modal logic for full post view
@@ -560,16 +522,16 @@
             <div class="blog-card-meta" style="margin-top: 1rem;">
               <div class="blog-card-date">
                 <i class="fas fa-calendar"></i>
-                <span>${new Date(post.date).toLocaleDateString()}</span>
+                <span>${new Date(post.published_at).toLocaleDateString()}</span>
               </div>
               <div class="blog-card-read-time">
                 <i class="fas fa-clock"></i>
-                <span>${post.readTime}</span>
+                <span>${post.read_time}</span>
               </div>
             </div>
           </div>
           <div class="blog-modal-body">
-            ${marked.parse(post.body)}
+            ${marked.parse(post.content)}
           </div>
         </div>
       `;
@@ -597,19 +559,23 @@
     }
 
     // Initialize blog
-    document.addEventListener('DOMContentLoaded', function() {
-      // Fetch blog/posts.json and render posts
-      fetch('blog/posts.json')
-        .then(res => res.json())
-        .then(posts => {
-          allPosts = [];
-          posts.forEach(postMeta => {
-            fetchAndRenderBlog(postMeta);
-          });
-        })
-        .catch(err => {
-          console.warn('Could not load posts.json:', err);
-        });
+    document.addEventListener('DOMContentLoaded', async function() {
+      const blogGrid = document.getElementById('blog-grid');
+      blogGrid.innerHTML = '<div style="color: white; text-align: center; grid-column: 1/-1;">Loading posts...</div>';
+
+      try {
+        const posts = await fetchAllPosts();
+        blogGrid.innerHTML = '';
+        
+        if (posts.length === 0) {
+          blogGrid.innerHTML = '<div style="color: white; text-align: center; grid-column: 1/-1;">No posts found.</div>';
+        } else {
+          posts.forEach(post => renderPost(post));
+        }
+      } catch (err) {
+        console.error('Error loading initial posts:', err);
+        blogGrid.innerHTML = '<div style="color: white; text-align: center; grid-column: 1/-1;">Error loading posts. Please check your connection.</div>';
+      }
 
       // Add filter event listeners
       document.querySelectorAll('.filter-btn').forEach(btn => {

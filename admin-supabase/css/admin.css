@@ -1,0 +1,248 @@
+/* Admin Panel Styles */
+
+:root {
+    --admin-bg: #f3f4f6;
+    --admin-card-bg: #ffffff;
+    --admin-text: #1f2937;
+    --admin-border: #e5e7eb;
+}
+
+body {
+    background-color: var(--admin-bg);
+    color: var(--admin-text);
+    min-height: 100vh;
+}
+
+.admin-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Login Screen */
+#login-screen {
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card {
+    background: var(--admin-card-bg);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-card h2 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: var(--first-color);
+}
+
+/* Forms */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="datetime-local"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 0.5rem;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.error-msg {
+    color: #ef4444;
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.875rem;
+}
+
+/* Header */
+.admin-header {
+    background: var(--admin-card-bg);
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--admin-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Dashboard */
+.admin-main {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    flex: 1;
+}
+
+.dashboard-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.posts-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.post-item {
+    background: var(--admin-card-bg);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--admin-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post-info h3 {
+    margin-bottom: 0.25rem;
+    font-size: 1.1rem;
+}
+
+.post-meta {
+    font-size: 0.875rem;
+    color: #6b7280;
+    display: flex;
+    gap: 1rem;
+}
+
+.status-badge {
+    padding: 0.125rem 0.5rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-published {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-draft {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+.post-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: #6b7280;
+    transition: color 0.2s;
+}
+
+.btn-icon:hover {
+    color: var(--first-color);
+}
+
+.btn-delete:hover {
+    color: #ef4444;
+}
+
+/* Editor */
+.editor-layout {
+    max-width: 1000px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.image-input-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.markdown-editor {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    height: 500px;
+}
+
+.markdown-editor textarea {
+    height: 100%;
+    font-family: monospace;
+}
+
+.markdown-preview {
+    background: var(--admin-card-bg);
+    border: 1px solid var(--admin-border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    overflow-y: auto;
+    height: 100%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .markdown-editor {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+    
+    .markdown-editor textarea {
+        height: 300px;
+    }
+    
+    .markdown-preview {
+        height: 300px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
