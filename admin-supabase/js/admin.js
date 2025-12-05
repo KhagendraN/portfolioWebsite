@@ -20,7 +20,42 @@ const screens = {
 document.addEventListener('DOMContentLoaded', async () => {
     checkAuth();
     setupEventListeners();
+    createToastContainer();
 });
+
+// Toast Notifications
+function createToastContainer() {
+    const container = document.createElement('div');
+    container.id = 'toast-container';
+    document.body.appendChild(container);
+}
+
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+
+    const icon = type === 'success' ? '<i class="fas fa-check-circle toast-icon"></i>' : '<i class="fas fa-exclamation-circle toast-icon"></i>';
+
+    toast.innerHTML = `
+        ${icon}
+        <span>${message}</span>
+    `;
+
+    container.appendChild(toast);
+
+    // Trigger animation
+    requestAnimationFrame(() => {
+        toast.classList.add('show');
+    });
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }, 3000);
+}
 
 // Authentication
 async function checkAuth() {
@@ -39,7 +74,9 @@ async function checkAuth() {
             currentUser = session.user;
             showScreen('dashboard');
             document.getElementById('user-email').textContent = currentUser.email;
+            document.getElementById('user-email').textContent = currentUser.email;
             loadData();
+            loadStats();
         } else {
             currentUser = null;
             showScreen('login');
@@ -98,10 +135,20 @@ function loadData() {
     }
 }
 
+async function loadStats() {
+    const { count: postsCount } = await supabase.from('blog_posts').select('*', { count: 'exact', head: true });
+    const { count: projectsCount } = await supabase.from('projects').select('*', { count: 'exact', head: true });
+    const { count: experiencesCount } = await supabase.from('experiences').select('*', { count: 'exact', head: true });
+
+    document.getElementById('stat-posts').textContent = postsCount || 0;
+    document.getElementById('stat-projects').textContent = projectsCount || 0;
+    document.getElementById('stat-experiences').textContent = experiencesCount || 0;
+}
+
 // Blog Posts Logic
 async function loadPosts() {
     const postsList = document.getElementById('posts-list');
-    postsList.innerHTML = '<div class="loading">Loading posts...</div>';
+    postsList.innerHTML = '<div class="spinner"></div>';
 
     const { data: posts, error } = await supabase
         .from('blog_posts')
@@ -151,7 +198,7 @@ window.editPost = async (id) => {
         .single();
 
     if (error) {
-        alert('Error loading post');
+        showToast('Error loading post', 'error');
         return;
     }
 
@@ -209,13 +256,12 @@ async function savePost() {
 
     saveBtn.disabled = false;
     if (error) {
-        statusSpan.textContent = 'Error saving!';
-        statusSpan.style.color = 'red';
+        statusSpan.textContent = '';
+        showToast('Error saving post: ' + error.message, 'error');
         console.error(error);
     } else {
-        statusSpan.textContent = 'Saved!';
-        statusSpan.style.color = 'green';
-        setTimeout(() => { statusSpan.textContent = ''; }, 2000);
+        statusSpan.textContent = '';
+        showToast('Post saved successfully!', 'success');
         if (!currentPostId) {
             showScreen('dashboard');
             loadPosts();
@@ -232,8 +278,9 @@ window.deletePost = async (id) => {
         .eq('id', id);
 
     if (error) {
-        alert('Error deleting post: ' + error.message);
+        showToast('Error deleting post: ' + error.message, 'error');
     } else {
+        showToast('Post deleted', 'success');
         loadPosts();
     }
 };
@@ -241,7 +288,7 @@ window.deletePost = async (id) => {
 // Projects Logic
 async function loadProjects() {
     const list = document.getElementById('projects-list');
-    list.innerHTML = '<div class="loading">Loading projects...</div>';
+    list.innerHTML = '<div class="spinner"></div>';
 
     const { data: projects, error } = await supabase
         .from('projects')
@@ -350,13 +397,12 @@ async function saveProject() {
 
     saveBtn.disabled = false;
     if (error) {
-        statusSpan.textContent = 'Error saving!';
-        statusSpan.style.color = 'red';
+        statusSpan.textContent = '';
+        showToast('Error saving project: ' + error.message, 'error');
         console.error(error);
     } else {
-        statusSpan.textContent = 'Saved!';
-        statusSpan.style.color = 'green';
-        setTimeout(() => { statusSpan.textContent = ''; }, 2000);
+        statusSpan.textContent = '';
+        showToast('Project saved successfully!', 'success');
         if (!currentProjectId) {
             showScreen('dashboard');
             loadProjects();
@@ -373,8 +419,9 @@ window.deleteProject = async (id) => {
         .eq('id', id);
 
     if (error) {
-        alert('Error deleting project: ' + error.message);
+        showToast('Error deleting project: ' + error.message, 'error');
     } else {
+        showToast('Project deleted', 'success');
         loadProjects();
     }
 };
@@ -382,7 +429,7 @@ window.deleteProject = async (id) => {
 // Experiences Logic
 async function loadExperiences() {
     const list = document.getElementById('experiences-list');
-    list.innerHTML = '<div class="loading">Loading experiences...</div>';
+    list.innerHTML = '<div class="spinner"></div>';
 
     const { data: experiences, error } = await supabase
         .from('experiences')
@@ -484,13 +531,12 @@ async function saveExperience() {
 
     saveBtn.disabled = false;
     if (error) {
-        statusSpan.textContent = 'Error saving!';
-        statusSpan.style.color = 'red';
+        statusSpan.textContent = '';
+        showToast('Error saving experience: ' + error.message, 'error');
         console.error(error);
     } else {
-        statusSpan.textContent = 'Saved!';
-        statusSpan.style.color = 'green';
-        setTimeout(() => { statusSpan.textContent = ''; }, 2000);
+        statusSpan.textContent = '';
+        showToast('Experience saved successfully!', 'success');
         if (!currentExperienceId) {
             showScreen('dashboard');
             loadExperiences();
@@ -507,8 +553,9 @@ window.deleteExperience = async (id) => {
         .eq('id', id);
 
     if (error) {
-        alert('Error deleting experience: ' + error.message);
+        showToast('Error deleting experience: ' + error.message, 'error');
     } else {
+        showToast('Experience deleted', 'success');
         loadExperiences();
     }
 };
@@ -590,13 +637,12 @@ async function saveProfile() {
 
     saveBtn.disabled = false;
     if (error) {
-        statusSpan.textContent = 'Error saving!';
-        statusSpan.style.color = 'red';
+        statusSpan.textContent = '';
+        showToast('Error saving profile: ' + error.message, 'error');
         console.error(error);
     } else {
-        statusSpan.textContent = 'Saved!';
-        statusSpan.style.color = 'green';
-        setTimeout(() => { statusSpan.textContent = ''; }, 2000);
+        statusSpan.textContent = '';
+        showToast('Profile saved successfully!', 'success');
     }
 }
 
@@ -607,7 +653,7 @@ async function uploadFile(file, bucket = 'portfolio-assets') {
         .upload(fileName, file);
 
     if (error) {
-        alert('Error uploading file: ' + error.message);
+        showToast('Error uploading file: ' + error.message, 'error');
         return null;
     }
 
@@ -626,7 +672,7 @@ async function uploadImage(file) {
         .upload(fileName, file);
 
     if (error) {
-        alert('Error uploading image: ' + error.message);
+        showToast('Error uploading image: ' + error.message, 'error');
         return null;
     }
 
