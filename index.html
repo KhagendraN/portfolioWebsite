@@ -35,7 +35,7 @@
         content="Explore projects in cybersecurity, networking, AI/ML, and more. Connect with Khagendra Neupane.">
     <meta name="twitter:image" content="https://khagendraneupane.com.np/assets/img/profile-final.png">
     <!-- Defer main JS -->
-    <script defer src="js/main.js"></script>
+    <script type="module" src="js/main.js"></script>
 </head>
 
 <body>
@@ -348,30 +348,7 @@
         <!-- Project Logic -->
         <script type="module">
             import { fetchProjects } from './js/projects-api.js';
-            // import { getTechIcon } from './js/main.js'; // Removed: main.js is not a module
-
-            // We need to make getTechIcon available or redefine it since main.js might not export it
-            // For simplicity, let's redefine a helper here or assume main.js functions are global (they are not if module)
-            // Since main.js is defer and not type=module, it puts things in global scope? 
-            // Actually main.js is not type=module, so its functions are global.
-            // But we are in a module script. We can access window.getTechIcon if main.js attaches it.
-            // Let's check main.js. It defines functions but doesn't explicitly attach to window unless we edit it.
-            // For now, let's duplicate the icon logic briefly or make it robust.
-
-            function getTechIconHTML(tech) {
-                const map = {
-                    'Python': '<i class="fab fa-python"></i>',
-                    'Networking': '<i class="fas fa-network-wired"></i>',
-                    'AI': '<i class="fas fa-brain"></i>',
-                    'C': '<i class="fas fa-code"></i>',
-                    'Linux': '<i class="fab fa-linux"></i>',
-                    'Sockets': '<i class="fas fa-plug"></i>',
-                    'Java': '<i class="fab fa-java"></i>',
-                    'HTML': '<i class="fab fa-html5"></i>',
-                    'CSS': '<i class="fab fa-css3-alt"></i>'
-                };
-                return map[tech] || '<i class="fas fa-code"></i>';
-            }
+            import { getTechIconHTML } from './js/utils.js';
 
             document.addEventListener('DOMContentLoaded', async () => {
                 const container = document.getElementById('projects-container');

@@ -1,20 +1,20 @@
-/*===== MENU SHOW =====*/ 
-const showMenu = (toggleId, navId) =>{
+/*===== MENU SHOW =====*/
+const showMenu = (toggleId, navId) => {
     const toggle = document.getElementById(toggleId),
-    nav = document.getElementById(navId)
+        nav = document.getElementById(navId)
 
-    if(toggle && nav){
-        toggle.addEventListener('click', ()=>{
+    if (toggle && nav) {
+        toggle.addEventListener('click', () => {
             nav.classList.toggle('show')
         })
     }
 }
-showMenu('nav-toggle','nav-menu')
+showMenu('nav-toggle', 'nav-menu')
 
 /*==================== REMOVE MENU MOBILE ====================*/
 const navLink = document.querySelectorAll('.nav__link')
 
-function linkAction(){
+function linkAction() {
     const navMenu = document.getElementById('nav-menu')
     // When we click on each nav__link, we remove the show-menu class
     navMenu.classList.remove('show')
@@ -22,35 +22,43 @@ function linkAction(){
 navLink.forEach(n => n.addEventListener('click', linkAction))
 
 /*==================== SCROLL SECTIONS ACTIVE LINK ====================*/
-const sections = document.querySelectorAll('section[id]')
+/*==================== SCROLL SECTIONS ACTIVE LINK (IntersectionObserver) ====================*/
+const sections = document.querySelectorAll('section[id]');
 
-const scrollActive = () =>{
-    const scrollDown = window.scrollY
+const activeLinkObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            document.querySelectorAll('.nav__menu a').forEach(link => {
+                link.classList.remove('active-link');
+            });
+            const activeLink = document.querySelector(`.nav__menu a[href*=${id}]`);
+            if (activeLink) activeLink.classList.add('active-link');
+        }
+    });
+}, { threshold: 0.5 });
 
-  sections.forEach(current =>{
-        const sectionHeight = current.offsetHeight,
-              sectionTop = current.offsetTop - 58,
-              sectionId = current.getAttribute('id'),
-              sectionsClass = document.querySelector('.nav__menu a[href*=' + sectionId + ']')
-        
-        if(scrollDown > sectionTop && scrollDown <= sectionTop + sectionHeight){
-            sectionsClass.classList.add('active-link')
-        }else{
-            sectionsClass.classList.remove('active-link')
-        }                                                    
-    })
-}
-window.addEventListener('scroll', scrollActive)
+sections.forEach(section => activeLinkObserver.observe(section));
 
 /*===== NAVBAR STICKY/FADE EFFECT ON SCROLL =====*/
-window.addEventListener('scroll', function() {
-    var header = document.querySelector('.l-header');
-    if (window.scrollY > 10) {
+/*===== NAVBAR STICKY (IntersectionObserver) =====*/
+const header = document.querySelector('.l-header');
+const topSentinel = document.createElement('div');
+topSentinel.style.position = 'absolute';
+topSentinel.style.top = '0';
+topSentinel.style.height = '1px';
+topSentinel.style.width = '100%';
+topSentinel.style.zIndex = '-1';
+document.body.prepend(topSentinel);
+
+const navObserver = new IntersectionObserver((entries) => {
+    if (!entries[0].isIntersecting) {
         header.classList.add('scrolled');
     } else {
         header.classList.remove('scrolled');
     }
 });
+navObserver.observe(topSentinel);
 
 /*===== SCROLL REVEAL ANIMATION =====*/
 const sr = ScrollReveal({
@@ -58,13 +66,13 @@ const sr = ScrollReveal({
     distance: '60px',
     duration: 2000,
     delay: 200,
-//     reset: true
+    //     reset: true
 });
 
-sr.reveal('.home__data, .about__img, .skills__subtitle, .skills__text',{}); 
-sr.reveal('.home__img, .about__subtitle, .about__text, .skills__img',{delay: 400}); 
-sr.reveal('.home__social-icon',{ interval: 200}); 
-sr.reveal('.skills__data, .work__img, .contact__input',{interval: 200}); 
+sr.reveal('.home__data, .about__img, .skills__subtitle, .skills__text', {});
+sr.reveal('.home__img, .about__subtitle, .about__text, .skills__img', { delay: 400 });
+sr.reveal('.home__social-icon', { interval: 200 });
+sr.reveal('.skills__data, .work__img, .contact__input', { interval: 200 });
 
 /*====Download CV===*/
 document.querySelector(".button").addEventListener("click", function (event) {
@@ -74,29 +82,30 @@ document.querySelector(".button").addEventListener("click", function (event) {
 
     const tempLink = document.createElement("a");
     tempLink.href = cvFilePath;
-    tempLink.download = "Khagendra_CV.pdf"; 
+    tempLink.download = "Khagendra_CV.pdf";
     document.body.appendChild(tempLink); // Append the link to the document
     tempLink.click(); // Programmatically click the link
     document.body.removeChild(tempLink); // Remove the link after download
 });
 
 /*===== SKILL BAR ANIMATION ON HOVER/FOCUS =====*/
-document.querySelectorAll('.skills__data').forEach(function(skill) {
-    var bar = skill.querySelector('.skills__bar');
-    var percent = skill.querySelector('.skills__percentage');
+/*===== SKILL BAR ANIMATION ON HOVER/FOCUS =====*/
+document.querySelectorAll('.skills__data').forEach(skill => {
+    const bar = skill.querySelector('.skills__bar');
+    const percent = skill.querySelector('.skills__percentage');
     if (bar && percent) {
-        var width = percent.textContent.trim();
+        const width = percent.textContent.trim();
         bar.style.transition = 'width 1s cubic-bezier(.77,0,.18,1)';
-        skill.addEventListener('mouseenter', function() {
+        skill.addEventListener('mouseenter', () => {
             bar.style.width = width;
         });
-        skill.addEventListener('focus', function() {
+        skill.addEventListener('focus', () => {
             bar.style.width = width;
         });
-        skill.addEventListener('mouseleave', function() {
+        skill.addEventListener('mouseleave', () => {
             bar.style.width = '0';
         });
-        skill.addEventListener('blur', function() {
+        skill.addEventListener('blur', () => {
             bar.style.width = '0';
         });
     }
@@ -105,45 +114,35 @@ document.querySelectorAll('.skills__data').forEach(function(skill) {
 /*===== PROJECT CARD MODAL PREVIEW (RICHER, BUTTON ONLY) =====*/
 // Remove old card click handler if present
 // Add event listener to .project__details-btn only
-function getTechIcon(tech) {
-    // Map tech to icon HTML (FontAwesome/Boxicons/emoji)
-    switch (tech.trim()) {
-        case 'Python': return '<span class="project__modal-tech-icon" data-tech="Python" title="Python"><i class="fab fa-python"></i></span>';
-        case 'C': return '<span class="project__modal-tech-icon" data-tech="C" title="C"><i class="fas fa-code"></i></span>';
-        case 'Java': return '<span class="project__modal-tech-icon" data-tech="Java" title="Java"><i class="fab fa-java"></i></span>';
-        case 'Linux': return '<span class="project__modal-tech-icon" data-tech="Linux" title="Linux"><i class="fab fa-linux"></i></span>';
-        case 'AI': return '<span class="project__modal-tech-icon" data-tech="AI" title="AI"><i class="fas fa-brain"></i></span>';
-        case 'Networking': return '<span class="project__modal-tech-icon" data-tech="Networking" title="Networking"><i class="fas fa-network-wired"></i></span>';
-        default: return '<span class="project__modal-tech-icon" data-tech="'+tech+'">'+tech+'</span>';
-    }
-}
-document.querySelectorAll('.project__details-btn').forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
+import { getTechIconSpan } from './utils.js';
+
+document.querySelectorAll('.project__details-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        var card = btn.closest('.project__card');
-        var modalTemplate = document.querySelector('.project__modal-template');
+        const card = btn.closest('.project__card');
+        const modalTemplate = document.querySelector('.project__modal-template');
         if (!modalTemplate) return;
-        var modal = document.createElement('div');
+        const modal = document.createElement('div');
         modal.className = 'project__modal active';
         // Clone modal content
-        var content = modalTemplate.firstElementChild.cloneNode(true);
+        const content = modalTemplate.firstElementChild.cloneNode(true);
         // Fill modal content from card data attributes
         content.querySelector('.project__modal-title').textContent = card.getAttribute('data-title') || '';
         content.querySelector('.project__modal-desc').textContent = card.getAttribute('data-desc') || '';
-        var img = content.querySelector('.project__modal-img');
+        const img = content.querySelector('.project__modal-img');
         img.src = card.getAttribute('data-img') || '';
         img.alt = card.getAttribute('data-title') || 'Project preview';
         // Tech stack icons
-        var techs = (card.getAttribute('data-tech')||'').split(',');
-        var techIcons = '';
-        techs.forEach(function(tech) { if(tech.trim()) techIcons += getTechIcon(tech); });
+        const techs = (card.getAttribute('data-tech') || '').split(',');
+        let techIcons = '';
+        techs.forEach(tech => { if (tech.trim()) techIcons += getTechIconSpan(tech); });
         content.querySelector('.project__modal-tech-icons').innerHTML = techIcons;
         // Links
-        var links = '';
-        var github = card.getAttribute('data-github');
-        if (github) links += '<a href="'+github+'" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub</a>';
-        var demo = card.getAttribute('data-demo');
-        if (demo) links += '<a href="'+demo+'" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Demo/README</a>';
+        let links = '';
+        const github = card.getAttribute('data-github');
+        if (github) links += '<a href="' + github + '" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub</a>';
+        const demo = card.getAttribute('data-demo');
+        if (demo) links += '<a href="' + demo + '" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Demo/README</a>';
         content.querySelector('.project__modal-links').innerHTML = links;
         modal.appendChild(content);
         document.body.appendChild(modal);
@@ -155,7 +154,7 @@ document.querySelectorAll('.project__details-btn').forEach(function(btn) {
             document.body.style.overflow = '';
         }
         content.querySelector('.project__modal-close').addEventListener('click', closeModal);
-        modal.addEventListener('click', function(ev) {
+        modal.addEventListener('click', (ev) => {
             if (ev.target === modal) closeModal();
         });
         document.addEventListener('keydown', function esc(e) {
@@ -165,52 +164,40 @@ document.querySelectorAll('.project__details-btn').forEach(function(btn) {
 });
 
 /*===== HERO SCROLL INDICATOR SMOOTH SCROLL =====*/
-document.querySelectorAll('.hero__scroll-indicator').forEach(function(indicator) {
-    indicator.addEventListener('click', function(e) {
-        e.preventDefault();
-        var about = document.getElementById('about');
-        if (about) {
-            about.scrollIntoView({ behavior: 'smooth' });
-        }
-    });
-});
+// Removed: CSS scroll-behavior: smooth handles this natively.
 
 /*===== TIMELINE FADE-IN ON SCROLL =====*/
-function isInViewport(el) {
-    const rect = el.getBoundingClientRect();
-    return (
-        rect.top < window.innerHeight - 60 &&
-        rect.bottom > 60
-    );
-}
-function revealTimeline() {
-    document.querySelectorAll('.timeline__item').forEach(function(item) {
-        if (isInViewport(item)) {
-            item.style.opacity = 1;
-            item.style.transform = 'translateY(0)';
+/*===== TIMELINE FADE-IN (IntersectionObserver) =====*/
+const timelineObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = 1;
+            entry.target.style.transform = 'translateY(0)';
         } else {
-            item.style.opacity = 0;
-            item.style.transform = 'translateY(40px)';
+            // Toggle back to hidden if desired, or remove this else block to keep it visible once revealed
+            entry.target.style.opacity = 0;
+            entry.target.style.transform = 'translateY(40px)';
         }
     });
-}
-window.addEventListener('scroll', revealTimeline);
-window.addEventListener('resize', revealTimeline);
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.timeline__item').forEach(function(item) {
+}, { threshold: 0.1, rootMargin: "0px 0px -60px 0px" });
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize timeline items
+    document.querySelectorAll('.timeline__item').forEach(item => {
         item.style.transition = 'opacity 0.7s, transform 0.7s';
         item.style.opacity = 0;
         item.style.transform = 'translateY(40px)';
+        timelineObserver.observe(item);
     });
-    revealTimeline();
-    var yearEl = document.getElementById('footer-year');
+
+    const yearEl = document.getElementById('footer-year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
-    var formStatus = document.getElementById('form-status');
+    const formStatus = document.getElementById('form-status');
     if (formStatus) { formStatus.textContent = ''; }
 });
 
 /*===== DARK/LIGHT MODE TOGGLE =====*/
-(function() {
+(function () {
     const toggleBtn = document.getElementById('theme-toggle');
     if (!toggleBtn) return;
     const icon = toggleBtn.querySelector('i');
@@ -239,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
         dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     }
     setTheme(dark);
-    toggleBtn.addEventListener('click', function() {
+    toggleBtn.addEventListener('click', function () {
         dark = !body.classList.contains(darkClass);
         setTheme(dark);
         localStorage.setItem('theme', dark ? 'dark' : 'light');
@@ -247,21 +234,21 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 
 /*===== VIEW MORE/LESS PROJECTS BUTTONS =====*/
-(function() {
-    var moreBtn = document.getElementById('projects-more-btn');
-    var lessBtn = document.getElementById('projects-less-btn');
-    var hiddenProjects = document.querySelectorAll('.project--hidden');
-    var projectsSection = document.getElementById('projects');
+(() => {
+    const moreBtn = document.getElementById('projects-more-btn');
+    const lessBtn = document.getElementById('projects-less-btn');
+    const hiddenProjects = document.querySelectorAll('.project--hidden');
+    const projectsSection = document.getElementById('projects');
     if (!moreBtn || !lessBtn) return;
-    moreBtn.addEventListener('click', function() {
-        hiddenProjects.forEach(function(card) {
+    moreBtn.addEventListener('click', () => {
+        hiddenProjects.forEach(card => {
             card.style.display = '';
         });
         moreBtn.style.display = 'none';
         lessBtn.style.display = '';
     });
-    lessBtn.addEventListener('click', function() {
-        hiddenProjects.forEach(function(card) {
+    lessBtn.addEventListener('click', () => {
+        hiddenProjects.forEach(card => {
             card.style.display = 'none';
         });
         lessBtn.style.display = 'none';
@@ -272,10 +259,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 })();
 
-(function() {
-    var form = document.getElementById('contact-form');
+(() => {
+    const form = document.getElementById('contact-form');
     if (!form) return;
-    var status = document.getElementById('form-status');
+    const status = document.getElementById('form-status');
     function setStatus(msg, isError) {
         if (!status) return;
         status.textContent = msg;
@@ -285,12 +272,12 @@ document.addEventListener('DOMContentLoaded', function() {
     function isValidEmail(email) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
-    form.addEventListener('submit', function(e) {
-        var name = form.querySelector('input[name="name"]');
-        var email = form.querySelector('input[name="email"]');
-        var message = form.querySelector('textarea[name="message"]');
+    form.addEventListener('submit', (e) => {
+        const name = form.querySelector('input[name="name"]');
+        const email = form.querySelector('input[name="email"]');
+        const message = form.querySelector('textarea[name="message"]');
         setStatus('', false);
-        [name, email, message].forEach(function(el){ if (el) el.classList.remove('input-error'); });
+        [name, email, message].forEach(el => { if (el) el.classList.remove('input-error'); });
         if (!name.value.trim()) {
             name.classList.add('input-error');
             name.focus();
@@ -316,17 +303,18 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 })();
 
-document.addEventListener('DOMContentLoaded', function() {
-  function revealSections() {
-    document.querySelectorAll('.section').forEach(function(section) {
-      const rect = section.getBoundingClientRect();
-      if (rect.top < window.innerHeight - 60) {
-        section.classList.add('visible');
-      }
-    });
-  }
-  window.addEventListener('scroll', revealSections);
-  window.addEventListener('resize', revealSections);
-  revealSections();
-});
+document.addEventListener('DOMContentLoaded', function () {
+    /*===== SECTION REVEAL (IntersectionObserver) =====*/
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                sectionObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: "0px 0px -60px 0px" });
 
+    document.querySelectorAll('.section').forEach(function (section) {
+        sectionObserver.observe(section);
+    });
+});
