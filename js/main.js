@@ -61,18 +61,27 @@ const navObserver = new IntersectionObserver((entries) => {
 navObserver.observe(topSentinel);
 
 /*===== SCROLL REVEAL ANIMATION =====*/
-const sr = ScrollReveal({
-    origin: 'top',
-    distance: '60px',
-    duration: 2000,
-    delay: 200,
-    //     reset: true
-});
+if (typeof ScrollReveal !== 'undefined') {
+    const sr = ScrollReveal({
+        origin: 'top',
+        distance: '60px',
+        duration: 2000,
+        delay: 200,
+        //     reset: true
+    });
 
-sr.reveal('.home__data, .about__img, .skills__subtitle, .skills__text', {});
-sr.reveal('.home__img, .about__subtitle, .about__text, .skills__img', { delay: 400 });
-sr.reveal('.home__social-icon', { interval: 200 });
-sr.reveal('.skills__data, .work__img, .contact__input', { interval: 200 });
+    sr.reveal('.home__data, .about__img, .skills__subtitle, .skills__text', {});
+    sr.reveal('.home__img, .about__subtitle, .about__text, .skills__img', { delay: 400 });
+    sr.reveal('.home__social-icon', { interval: 200 });
+    sr.reveal('.skills__data, .work__img, .contact__input', { interval: 200 });
+} else {
+    console.warn('ScrollReveal is not defined. Content will be visible by default.');
+    // Ensure content is visible if ScrollReveal fails
+    document.querySelectorAll('.home__data, .about__img, .skills__subtitle, .skills__text, .home__img, .about__subtitle, .about__text, .skills__img, .home__social-icon, .skills__data, .work__img, .contact__input').forEach(el => {
+        el.style.visibility = 'visible';
+        el.style.opacity = '1';
+    });
+}
 
 /*====Download CV===*/
 document.querySelector(".button").addEventListener("click", function (event) {
