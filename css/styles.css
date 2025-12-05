@@ -1371,6 +1371,12 @@ img {
   background: none;
 }
 
+.timeline__container::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
 .timeline__container::before {
   content: '';
   position: absolute;

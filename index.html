@@ -546,6 +546,18 @@
                         experiences.forEach(exp => {
                             const item = document.createElement('div');
                             item.className = 'timeline__item';
+
+                            // Apply layout classes based on type
+                            if (exp.type === 'education') {
+                                item.classList.add('left');
+                            } else if (exp.type === 'experience') {
+                                item.classList.add('right');
+                            } else {
+                                // Default fallback if needed, or just let it alternate if CSS supports it
+                                // For now, defaulting to right for unknown types to keep them on one side
+                                item.classList.add('right');
+                            }
+
                             item.setAttribute('data-type', exp.type);
 
                             item.innerHTML = `
