@@ -1,0 +1,123 @@
+/*===== DARK MODE STYLES =====*/
+.dark-mode {
+  background: #181824 !important;
+  color: #e9a9ea !important;
+}
+
+.dark-mode .section-title {
+  color: #e9a9ea !important;
+}
+
+.dark-mode .footer {
+  background: #23234a !important;
+  color: #e9a9ea !important;
+}
+
+.dark-mode .button {
+  background: #23234a !important;
+  color: #e9a9ea !important;
+}
+
+.dark-mode .button:hover,
+.dark-mode .button:focus {
+  background: var(--first-color) !important;
+  color: #fff !important;
+}
+
+.dark-mode .contact__input {
+  background: #23234a !important;
+  color: #e9a9ea !important;
+  border-color: #6366f1 !important;
+}
+
+.dark-mode .form-status--ok {
+  background: #23234a !important;
+  color: #a3bffa !important;
+}
+
+.dark-mode .form-status--error {
+  background: #3b1f1f !important;
+  color: #ff6b6b !important;
+}
+
+/* Dark mode for all sections */
+.dark-mode .section,
+.dark-mode .bd-grid,
+.dark-mode .about__container,
+.dark-mode .skills__container,
+.dark-mode .projects__container,
+.dark-mode .timeline__container,
+.dark-mode .contact__container {
+  background: #181824 !important;
+  color: #e9a9ea !important;
+}
+
+.dark-mode .project__card,
+.dark-mode .skills__group,
+.dark-mode .timeline__item,
+.dark-mode .contact__form {
+  background: #23234a !important;
+  color: #e9a9ea !important;
+}
+
+.dark-mode .project__title,
+.dark-mode .project__desc,
+.dark-mode .skills__category,
+.dark-mode .skills__desc,
+.dark-mode .timeline__role,
+.dark-mode .timeline__desc,
+.dark-mode .footer__title,
+.dark-mode .footer__tagline {
+  color: #a3bffa !important;
+}
+
+.dark-mode .nav__menu,
+.dark-mode .nav,
+.dark-mode .l-header {
+  background: #23234a !important;
+  color: #e9a9ea !important;
+}
+
+.dark-mode .nav__link,
+.dark-mode .nav__logo {
+  color: #a3bffa !important;
+}
+
+.dark-mode .active-link {
+  color: var(--first-color) !important;
+}
+
+.dark-mode .project__modal-content {
+  background: #23234a !important;
+  color: #e9a9ea !important;
+}
+
+.dark-mode .project__modal-title {
+  color: #a3bffa !important;
+}
+
+.dark-mode .project__modal-desc {
+  color: #e9a9ea !important;
+}
+
+.dark-mode .project__modal-links a {
+  color: #a3bffa !important;
+}
+
+.dark-mode .project__modal-links a:hover,
+.dark-mode .project__modal-links a:focus {
+  color: var(--first-color) !important;
+}
+
+.dark-mode .achievement__card {
+  background: #23234a !important;
+  color: #e9a9ea !important;
+}
+
+.dark-mode .achievement__title {
+  color: #a3bffa !important;
+}
+
+.dark-mode .achievement__issuer {
+  color: #bfc7e6 !important;
+}
