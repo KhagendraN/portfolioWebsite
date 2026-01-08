@@ -73,7 +73,7 @@ if (typeof ScrollReveal !== 'undefined') {
     sr.reveal('.home__data, .about__img, .skills__subtitle, .skills__text', {});
     sr.reveal('.home__img, .about__subtitle, .about__text, .skills__img', { delay: 400 });
     sr.reveal('.home__social-icon', { interval: 200 });
-    sr.reveal('.skills__data, .work__img, .contact__input', { interval: 200 });
+    sr.reveal('.skills__data, .work__img, .contact__input, .achievement__card', { interval: 200 });
 } else {
     console.warn('ScrollReveal is not defined. Content will be visible by default.');
     // Ensure content is visible if ScrollReveal fails
