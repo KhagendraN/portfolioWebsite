@@ -1,0 +1,17 @@
+# robots.txt for https://khagendraneupane.com.np
+
+# Allow all robots
+User-agent: *
+Allow: /
+
+# Disallow admin panel
+Disallow: /admin-supabase/
+
+# Disallow node modules
+Disallow: /node_modules/
+
+# Disallow scripts directory
+Disallow: /scripts/
+
+# Sitemap location
+Sitemap: https://khagendraneupane.com.np/sitemap.xml

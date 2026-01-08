@@ -4,7 +4,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Khagendra Neupane | Portfolio</title>
+    <title>Khagendra Neupane | Cybersecurity & AI/ML Portfolio</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/img/logo2-pic.png">
+    <link rel="apple-touch-icon" href="assets/img/logo2-pic.png">
+
+    <!-- Theme Color for Mobile Browsers -->
+    <meta name="theme-color" content="#4070f4" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)">
+
+    <!-- Prevent Dark Mode Flash -->
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') ||
+                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark-mode');
+            }
+        })();
+    </script>
+
+    <!-- Preconnect to External Domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+
+    <!-- Preload Critical Assets -->
+    <link rel="preload" as="style" href="css/base.css">
+    <link rel="preload" as="image" href="assets/img/profile-final.png">
+    <link rel="preload" as="font" href="https://fonts.gstatic.com/s/poppins/v20/pxiByp8kv8JHgFVrLDz8Z1xlFd2JQEk.woff2" type="font/woff2" crossorigin>
+
     <!-- CSS Modules -->
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout.css">
@@ -12,36 +43,91 @@
     <link rel="stylesheet" href="css/sections.css">
     <link rel="stylesheet" href="css/themes.css">
     <link rel="stylesheet" href="css/responsive.css">
-    <link rel="shortcut icon" type="web-icon" href="assets/img/logo2-pic.png">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto
-    <link rel=" preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <!-- Boxicons & FontAwesome -->
-    <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <meta name="description"
-        content="Explore the portfolio of Khagendra Neupane: Cybersecurity, Networking, AI/ML projects, experience, and contact information.">
-    <meta name="keywords"
-        content="Khagendra Neupane, portfolio, cybersecurity, networking, AI, machine learning, software, projects, Python, C, Linux, BEI, Pulchowk Campus">
-    <meta name="robots" content="index, follow">
+
+    <!-- Google Fonts (Optimized - Single Import) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Boxicons & FontAwesome (Deferred for Performance) -->
+    <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet' media="print" onload="this.media='all'">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript>
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    </noscript>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Portfolio of Khagendra Neupane - BEI Student at Pulchowk Campus specializing in Cybersecurity, Networking, and AI/ML. Explore my projects, achievements, and experience.">
+    <meta name="keywords" content="Khagendra Neupane, cybersecurity, networking, AI, machine learning, portfolio, BEI, Pulchowk Campus, Python, C, Linux, penetration testing, network security">
+    <meta name="author" content="Khagendra Neupane">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="canonical" href="https://khagendraneupane.com.np/">
-    <!-- Open Graph -->
-    <meta property="og:title" content="Khagendra Neupane | Portfolio">
-    <meta property="og:description"
-        content="Explore projects in cybersecurity, networking, AI/ML, and more. Connect with Khagendra Neupane.">
+
+    <!-- Open Graph / Facebook Meta Tags -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://khagendraneupane.com.np/">
+    <meta property="og:site_name" content="Khagendra Neupane Portfolio">
+    <meta property="og:title" content="Khagendra Neupane | Cybersecurity & AI/ML Portfolio">
+    <meta property="og:description" content="BEI Student at Pulchowk Campus specializing in Cybersecurity, Networking, and AI/ML. Explore my projects and achievements.">
     <meta property="og:image" content="https://khagendraneupane.com.np/assets/img/profile-final.png">
-    <!-- Twitter Card -->
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Khagendra Neupane - Cybersecurity & AI/ML Professional">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Khagendra Neupane | Portfolio">
-    <meta name="twitter:description"
-        content="Explore projects in cybersecurity, networking, AI/ML, and more. Connect with Khagendra Neupane.">
+    <meta name="twitter:url" content="https://khagendraneupane.com.np/">
+    <meta name="twitter:title" content="Khagendra Neupane | Cybersecurity & AI/ML Portfolio">
+    <meta name="twitter:description" content="BEI Student at Pulchowk Campus specializing in Cybersecurity, Networking, and AI/ML. Explore my projects and achievements.">
     <meta name="twitter:image" content="https://khagendraneupane.com.np/assets/img/profile-final.png">
-    <!-- Supabase (UMD) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta name="twitter:image:alt" content="Khagendra Neupane - Cybersecurity & AI/ML Professional">
+    <meta name="twitter:creator" content="@KhagendraN">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Khagendra Neupane",
+      "url": "https://khagendraneupane.com.np",
+      "image": "https://khagendraneupane.com.np/assets/img/profile-final.png",
+      "jobTitle": "Cybersecurity, Networking & AI/ML Specialist",
+      "worksFor": {
+        "@type": "EducationalOrganization",
+        "name": "Pulchowk Campus, IOE"
+      },
+      "alumniOf": {
+        "@type": "EducationalOrganization",
+        "name": "Pulchowk Campus"
+      },
+      "knowsAbout": ["Cybersecurity", "Network Security", "Artificial Intelligence", "Machine Learning", "Python", "Linux", "Penetration Testing"],
+      "sameAs": [
+        "https://www.linkedin.com/in/khagendra-neupane-37427532a/",
+        "https://github.com/KhagendraN"
+      ],
+      "email": "mailto:khagendranp@gmail.com"
+    }
+    </script>
+
+    <!-- Additional Structured Data for Website -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Khagendra Neupane Portfolio",
+      "url": "https://khagendraneupane.com.np",
+      "description": "Professional portfolio showcasing cybersecurity, networking, and AI/ML projects",
+      "inLanguage": "en-US",
+      "author": {
+        "@type": "Person",
+        "name": "Khagendra Neupane"
+      }
+    }
+    </script>
+
+    <!-- Supabase (UMD) - Deferred for Performance -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+
     <!-- Main JavaScript Modules -->
     <script type="module" src="js/main.js"></script>
     <script type="module" src="js/sections.js"></script>
