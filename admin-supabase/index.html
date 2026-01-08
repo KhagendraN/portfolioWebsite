@@ -58,6 +58,10 @@
                         <h3>Experience</h3>
                         <p id="stat-experiences">-</p>
                     </div>
+                    <div class="stat-card">
+                        <h3>Achievements</h3>
+                        <p id="stat-achievements">-</p>
+                    </div>
                 </div>
 
                 <div class="dashboard-controls">
@@ -65,6 +69,7 @@
                         <button id="tab-posts" class="tab-btn active">Blog Posts</button>
                         <button id="tab-projects" class="tab-btn">Projects</button>
                         <button id="tab-experiences" class="tab-btn">Experience</button>
+                        <button id="tab-achievements" class="tab-btn">Achievements</button>
                         <button id="tab-profile" class="tab-btn">Profile</button>
                     </div>
                     <div class="action-controls">
@@ -93,6 +98,13 @@
                     <div class="posts-list" id="experiences-list">
                         <!-- Experiences will be rendered here -->
                         <div class="loading">Loading experiences...</div>
+                    </div>
+                </div>
+
+                <div id="achievements-view" class="hidden">
+                    <div class="posts-list" id="achievements-list">
+                        <!-- Achievements will be rendered here -->
+                        <div class="loading">Loading achievements...</div>
                     </div>
                 </div>
 
@@ -357,6 +369,68 @@
                     <div class="form-group">
                         <label for="experience-order">Display Order</label>
                         <input type="number" id="experience-order" value="0" min="0">
+                    </div>
+                </form>
+            </main>
+        </div>
+
+        <!-- Achievement Editor Screen -->
+        <div id="achievement-editor-screen" class="admin-screen hidden">
+            <header class="admin-header">
+                <div class="header-left">
+                    <button id="achievement-back-btn" class="button button--outline"><i class="fas fa-arrow-left"></i>
+                        Back</button>
+                    <h1 id="achievement-editor-title">New Achievement</h1>
+                </div>
+                <div class="header-actions">
+                    <span id="achievement-save-status"></span>
+                    <button id="achievement-save-btn" class="button">Save</button>
+                </div>
+            </header>
+
+            <main class="admin-main editor-layout">
+                <form id="achievement-form" class="editor-form">
+                    <div class="form-group">
+                        <label for="achievement-title">Title</label>
+                        <input type="text" id="achievement-title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="achievement-desc">Description</label>
+                        <textarea id="achievement-desc" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="achievement-issuer">Issuer</label>
+                            <input type="text" id="achievement-issuer" placeholder="e.g. Google, Coursera">
+                        </div>
+                        <div class="form-group">
+                            <label for="achievement-date">Date Received</label>
+                            <input type="date" id="achievement-date">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="achievement-image">Image URL</label>
+                        <div class="image-input-group">
+                            <input type="text" id="achievement-image" placeholder="https://...">
+                            <input type="file" id="achievement-image-upload" accept="image/*" style="display: none;">
+                            <button type="button" id="achievement-upload-btn"
+                                class="button button--outline">Upload</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="achievement-link">Credential Link</label>
+                        <input type="text" id="achievement-link" placeholder="https://...">
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="achievement-pinned">
+                            Pinned (Show on main page)
+                        </label>
                     </div>
                 </form>
             </main>

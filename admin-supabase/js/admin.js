@@ -5,7 +5,8 @@ let currentUser = null;
 let currentPostId = null;
 let currentProjectId = null;
 let currentExperienceId = null;
-let activeTab = 'posts'; // 'posts', 'projects', or 'experiences'
+let currentAchievementId = null;
+let activeTab = 'posts'; // 'posts', 'projects', 'experiences', or 'achievements'
 
 // DOM Elements
 const screens = {
@@ -13,7 +14,8 @@ const screens = {
     dashboard: document.getElementById('dashboard-screen'),
     editor: document.getElementById('editor-screen'),
     projectEditor: document.getElementById('project-editor-screen'),
-    experienceEditor: document.getElementById('experience-editor-screen')
+    experienceEditor: document.getElementById('experience-editor-screen'),
+    achievementEditor: document.getElementById('achievement-editor-screen')
 };
 
 // Initialize
@@ -109,6 +111,7 @@ function switchTab(tab) {
     document.getElementById('posts-view').classList.add('hidden');
     document.getElementById('projects-view').classList.add('hidden');
     document.getElementById('experiences-view').classList.add('hidden');
+    document.getElementById('achievements-view').classList.add('hidden');
     document.getElementById('profile-view').classList.add('hidden');
     document.getElementById(`${tab}-view`).classList.remove('hidden');
 
@@ -130,6 +133,8 @@ function loadData() {
         loadProjects();
     } else if (activeTab === 'experiences') {
         loadExperiences();
+    } else if (activeTab === 'achievements') {
+        loadAchievements();
     } else if (activeTab === 'profile') {
         loadProfile();
     }
@@ -139,10 +144,12 @@ async function loadStats() {
     const { count: postsCount } = await supabase.from('blog_posts').select('*', { count: 'exact', head: true });
     const { count: projectsCount } = await supabase.from('projects').select('*', { count: 'exact', head: true });
     const { count: experiencesCount } = await supabase.from('experiences').select('*', { count: 'exact', head: true });
+    const { count: achievementsCount } = await supabase.from('achievements').select('*', { count: 'exact', head: true });
 
     document.getElementById('stat-posts').textContent = postsCount || 0;
     document.getElementById('stat-projects').textContent = projectsCount || 0;
     document.getElementById('stat-experiences').textContent = experiencesCount || 0;
+    document.getElementById('stat-achievements').textContent = achievementsCount || 0;
 }
 
 // Blog Posts Logic
@@ -560,6 +567,142 @@ window.deleteExperience = async (id) => {
     }
 };
 
+// Achievements Logic
+async function loadAchievements() {
+    const list = document.getElementById('achievements-list');
+    list.innerHTML = '<div class="spinner"></div>';
+
+    const { data: achievements, error } = await supabase
+        .from('achievements')
+        .select('*')
+        .order('is_pinned', { ascending: false })
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        list.innerHTML = `<div class="error-msg">Error loading achievements: ${error.message}</div>`;
+        return;
+    }
+
+    if (achievements.length === 0) {
+        list.innerHTML = '<div class="no-posts">No achievements found. Create one!</div>';
+        return;
+    }
+
+    list.innerHTML = achievements.map(a => `
+        <div class="post-item">
+            <div class="post-info">
+                <h3>${a.title}</h3>
+                <div class="post-meta">
+                    <span class="status-badge ${a.is_pinned ? 'status-published' : 'status-draft'}">
+                        ${a.is_pinned ? 'Pinned' : 'Normal'}
+                    </span>
+                    <span>${a.issuer || 'No Issuer'}</span>
+                    <span>${a.date_received ? new Date(a.date_received).toLocaleDateString() : ''}</span>
+                </div>
+            </div>
+            <div class="post-actions">
+                <button class="btn-icon" onclick="window.editAchievement('${a.id}')" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-icon btn-delete" onclick="window.deleteAchievement('${a.id}')" title="Delete">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+window.editAchievement = async (id) => {
+    currentAchievementId = id;
+    const { data: achievement, error } = await supabase
+        .from('achievements')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+    if (error) {
+        alert('Error loading achievement');
+        return;
+    }
+
+    fillAchievementEditor(achievement);
+    showScreen('achievementEditor');
+    document.getElementById('achievement-editor-title').textContent = 'Edit Achievement';
+};
+
+function fillAchievementEditor(a) {
+    document.getElementById('achievement-title').value = a.title || '';
+    document.getElementById('achievement-desc').value = a.description || '';
+    document.getElementById('achievement-issuer').value = a.issuer || '';
+    document.getElementById('achievement-date').value = a.date_received || '';
+    document.getElementById('achievement-image').value = a.image_url || '';
+    document.getElementById('achievement-link').value = a.link_url || '';
+    document.getElementById('achievement-pinned').checked = a.is_pinned || false;
+}
+
+async function saveAchievement() {
+    const saveBtn = document.getElementById('achievement-save-btn');
+    const statusSpan = document.getElementById('achievement-save-status');
+
+    saveBtn.disabled = true;
+    statusSpan.textContent = 'Saving...';
+
+    const achievementData = {
+        title: document.getElementById('achievement-title').value,
+        description: document.getElementById('achievement-desc').value,
+        issuer: document.getElementById('achievement-issuer').value,
+        date_received: document.getElementById('achievement-date').value || null,
+        image_url: document.getElementById('achievement-image').value,
+        link_url: document.getElementById('achievement-link').value,
+        is_pinned: document.getElementById('achievement-pinned').checked,
+        author_id: currentUser.id
+    };
+
+    let error;
+    if (currentAchievementId) {
+        const result = await supabase
+            .from('achievements')
+            .update(achievementData)
+            .eq('id', currentAchievementId);
+        error = result.error;
+    } else {
+        const result = await supabase
+            .from('achievements')
+            .insert(achievementData);
+        error = result.error;
+    }
+
+    saveBtn.disabled = false;
+    if (error) {
+        statusSpan.textContent = '';
+        showToast('Error saving achievement: ' + error.message, 'error');
+        console.error(error);
+    } else {
+        statusSpan.textContent = '';
+        showToast('Achievement saved successfully!', 'success');
+        if (!currentAchievementId) {
+            showScreen('dashboard');
+            loadAchievements();
+        }
+    }
+}
+
+window.deleteAchievement = async (id) => {
+    if (!confirm('Are you sure you want to delete this achievement?')) return;
+
+    const { error } = await supabase
+        .from('achievements')
+        .delete()
+        .eq('id', id);
+
+    if (error) {
+        showToast('Error deleting achievement: ' + error.message, 'error');
+    } else {
+        showToast('Achievement deleted', 'success');
+        loadAchievements();
+    }
+};
+
 // Profile Logic
 async function loadProfile() {
     const { data: profile, error } = await supabase
@@ -704,6 +847,7 @@ function setupEventListeners() {
     document.getElementById('tab-posts').addEventListener('click', () => switchTab('posts'));
     document.getElementById('tab-projects').addEventListener('click', () => switchTab('projects'));
     document.getElementById('tab-experiences').addEventListener('click', () => switchTab('experiences'));
+    document.getElementById('tab-achievements').addEventListener('click', () => switchTab('achievements'));
     document.getElementById('tab-profile').addEventListener('click', () => switchTab('profile'));
 
     // New Button
@@ -723,6 +867,11 @@ function setupEventListeners() {
             fillExperienceEditor({});
             showScreen('experienceEditor');
             document.getElementById('experience-editor-title').textContent = 'New Experience';
+        } else if (activeTab === 'achievements') {
+            currentAchievementId = null;
+            fillAchievementEditor({});
+            showScreen('achievementEditor');
+            document.getElementById('achievement-editor-title').textContent = 'New Achievement';
         }
     });
 
@@ -758,6 +907,32 @@ function setupEventListeners() {
         loadExperiences();
     });
     document.getElementById('experience-save-btn').addEventListener('click', saveExperience);
+
+    // Achievement Editor
+    document.getElementById('achievement-back-btn').addEventListener('click', () => {
+        showScreen('dashboard');
+        loadAchievements();
+    });
+    document.getElementById('achievement-save-btn').addEventListener('click', saveAchievement);
+
+    const achievementUploadBtn = document.getElementById('achievement-upload-btn');
+    const achievementFileInput = document.getElementById('achievement-image-upload');
+    const achievementUrlInput = document.getElementById('achievement-image');
+
+    achievementUploadBtn.addEventListener('click', () => achievementFileInput.click());
+    achievementFileInput.addEventListener('change', async (e) => {
+        if (e.target.files.length > 0) {
+            achievementUploadBtn.textContent = 'Uploading...';
+            achievementUploadBtn.disabled = true;
+            const url = await uploadFile(e.target.files[0]);
+            if (url) {
+                achievementUrlInput.value = url;
+            }
+            achievementUploadBtn.textContent = 'Upload';
+            achievementUploadBtn.disabled = false;
+            achievementFileInput.value = '';
+        }
+    });
 
     // Profile Settings
     document.getElementById('profile-save-btn').addEventListener('click', saveProfile);
