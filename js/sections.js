@@ -190,10 +190,17 @@ export async function initAchievements() {
 
             const dateStr = a.date_received ? new Date(a.date_received).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '';
 
+            const iconContent = a.image_url
+                ? `<img src="${a.image_url}" alt="${a.title}" class="achievement__image" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                   <i class="fas fa-trophy achievement__fallback-icon" style="display:none;"></i>`
+                : `<i class="fas fa-trophy"></i>`;
+
+            const iconWrapper = a.link_url && a.image_url
+                ? `<a href="${a.link_url}" class="achievement__icon-link" target="_blank" rel="noopener">${iconContent}</a>`
+                : `<div class="achievement__icon">${iconContent}</div>`;
+
             card.innerHTML = `
-                <div class="achievement__icon">
-                    <i class="fas fa-trophy"></i>
-                </div>
+                ${iconWrapper}
                 <div class="achievement__content">
                     <h3 class="achievement__title">${a.title}</h3>
                     <p class="achievement__issuer">${a.issuer} ${dateStr ? `• ${dateStr}` : ''}</p>
@@ -243,8 +250,15 @@ export async function initExperiences() {
 
             item.setAttribute('data-type', exp.type);
 
+            const iconClass = exp.type === 'education' ? 'fa-graduation-cap' : 'fa-briefcase';
+
             item.innerHTML = `
-                <div class="timeline__date">${exp.date_range}</div>
+                <div class="timeline__header">
+                    <div class="timeline__date">${exp.date_range}</div>
+                    <div class="timeline__icon">
+                        <i class="fas ${iconClass}"></i>
+                    </div>
+                </div>
                 <div class="timeline__content">
                     <h3 class="timeline__role">${exp.role}</h3>
                     <p class="timeline__desc">${exp.description}</p>
