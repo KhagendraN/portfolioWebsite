@@ -47,7 +47,7 @@
     <link rel="stylesheet" href="css/chat.css">
 
     <!-- Google Fonts (Optimized - Single Import) -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
     <!-- Boxicons & FontAwesome (Deferred for Performance) -->
     <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet' media="print"
@@ -142,6 +142,7 @@
     <!-- Main JavaScript Modules -->
     <script type="module" src="js/main.js"></script>
     <script type="module" src="js/sections.js"></script>
+    <script type="module" src="js/particle-sphere.js"></script>
     <script defer src="js/chat.js"></script>
 </head>
 
@@ -150,7 +151,7 @@
     <header class="l-header">
         <nav class="nav bd-grid">
             <div>
-                <a href="#" class="nav__logo">Khagendra</a>
+                <a href="#" class="nav__logo"><span style="color:#00827c; font-size: 1.2rem;">▲</span> Khagendra</a>
             </div>
             <div class="nav__menu" id="nav-menu">
                 <ul class="nav__list">
@@ -166,18 +167,16 @@
             <div class="nav__toggle" id="nav-toggle">
                 <i class='bx bx-menu'></i>
             </div>
-            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
-                <i class="fas fa-moon"></i>
-            </button>
         </nav>
     </header>
     <main class="l-main">
         <!--===== HERO SECTION =====-->
         <section class="hero bd-grid" id="hero">
+            <canvas id="particle-canvas"></canvas>
             <div class="hero__bg" aria-hidden="true"></div>
             <div class="hero__content">
                 <h1 class="hero__title">I’m <span class="hero__title-color">Khagendra Neupane</span></h1>
-                <h2 class="hero__subtitle">Aspiring Cybersecurity &bull; Networking &bull; AI/ML Professional</h2>
+                <h2 class="hero__subtitle">Aspiring Cybersecurity / Networking / AI/ML Professional</h2>
                 <div class="hero__buttons">
                     <a href="assets/files/khagendra_cv.pdf" class="button" download>Download CV</a>
                     <a href="mailto:khagendranp@gmail.com" class="button button--outline">Email me</a>
@@ -192,20 +191,7 @@
             </div>
             <div class="hero__img-wrapper">
                 <img src="assets/img/profile-final.png" alt="Khagendra Neupane headshot" class="hero__img"
-                    loading="lazy"
-                    style="object-fit: cover; object-position: center; width: 200px; height: 200px; border-radius: 50%; box-shadow: 0 8px 32px rgba(34,34,59,0.15), 0 2px 8px rgba(0,0,0,0.08); background: #fff;">
-            </div>
-            <a href="#about" class="hero__scroll-indicator" aria-label="Scroll to About">
-                <span class="hero__scroll-arrow">&#8595;</span>
-            </a>
-            <!-- SVG Wave for transition -->
-            <div class="hero__wave" aria-hidden="true">
-                <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg"
-                    style="width:100%;height:60px;display:block;">
-                    <path fill="#fff" fill-opacity="1"
-                        d="M0,32L48,37.3C96,43,192,53,288,69.3C384,85,480,107,576,117.3C672,128,768,128,864,117.3C960,107,1056,85,1152,69.3C1248,53,1344,43,1392,37.3L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z">
-                    </path>
-                </svg>
+                    loading="lazy">
             </div>
         </section>
         <!--===== ABOUT SECTION =====-->
@@ -218,6 +204,7 @@
                 </div>
                 <div class="about__content">
                     <h3 class="about__subtitle">I’m Khagendra Neupane</h3>
+
                     <p class="about__text">I am a Bachelor of Engineering (Electronics, Communication & Information)
                         student at Tribhuvan University, Pulchowk Campus, expected to graduate in 2028. I am passionate
                         about networking, cybersecurity, and AI/ML, and enjoy bridging academic learning with practical
@@ -245,142 +232,64 @@
         <section class="skills section" id="skills">
             <h2 class="section-title">Skills</h2>
 
-            <!-- SVG Gradients for circular progress -->
-            <svg width="0" height="0" style="position: absolute;">
-                <defs>
-                    <linearGradient id="skillGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:#4f46e5;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1" />
-                    </linearGradient>
-                    <linearGradient id="expertGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#34d399;stop-opacity:1" />
-                    </linearGradient>
-                    <linearGradient id="advancedGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#60a5fa;stop-opacity:1" />
-                    </linearGradient>
-                    <linearGradient id="intermediateGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#fbbf24;stop-opacity:1" />
-                    </linearGradient>
-                </defs>
-            </svg>
-
             <div class="skills__container bd-grid">
-                <div class="skills__group">
+                <div class="skills__group active">
                     <h3 class="skills__category">Programming</h3>
                     <div class="skills__content">
-                        <div class="skills__data" tabindex="0" style="--progress: 95" data-level="expert">
-                            <div class="skills__progress-circle">
-                                <svg viewBox="0 0 120 120">
-                                    <circle class="skills__progress-bg" cx="60" cy="60" r="54" />
-                                    <circle class="skills__progress-bar" cx="60" cy="60" r="54" />
-                                </svg>
-                                <div class="skills__progress-text">95%</div>
-                            </div>
-                            <div class="skills__names"><i class="fas fa-code skills__icon"></i><span
-                                    class="skills__name">C</span></div>
-                            <span class="skills__desc">System-level programming, algorithms</span>
+                        <div class="skill-tag" data-level="expert">
+                            <i class="fas fa-code skill-tag__icon"></i>
+                            <span class="skill-tag__name">C</span>
+                            <span class="skill-tag__desc">System-level programming, algorithms</span>
                         </div>
-                        <div class="skills__data" tabindex="0" style="--progress: 85" data-level="advanced">
-                            <div class="skills__progress-circle">
-                                <svg viewBox="0 0 120 120">
-                                    <circle class="skills__progress-bg" cx="60" cy="60" r="54" />
-                                    <circle class="skills__progress-bar" cx="60" cy="60" r="54" />
-                                </svg>
-                                <div class="skills__progress-text">85%</div>
-                            </div>
-                            <div class="skills__names"><i class="fas fa-laptop-code skills__icon"></i><span
-                                    class="skills__name">C++</span></div>
-                            <span class="skills__desc">Performance-critical apps</span>
+                        <div class="skill-tag" data-level="advanced">
+                            <i class="fas fa-laptop-code skill-tag__icon"></i>
+                            <span class="skill-tag__name">C++</span>
+                            <span class="skill-tag__desc">Performance-critical apps</span>
                         </div>
-                        <div class="skills__data" tabindex="0" style="--progress: 65" data-level="intermediate">
-                            <div class="skills__progress-circle">
-                                <svg viewBox="0 0 120 120">
-                                    <circle class="skills__progress-bg" cx="60" cy="60" r="54" />
-                                    <circle class="skills__progress-bar" cx="60" cy="60" r="54" />
-                                </svg>
-                                <div class="skills__progress-text">65%</div>
-                            </div>
-                            <div class="skills__names"><i class='fab fa-python skills__icon'></i><span
-                                    class="skills__name">Python</span></div>
-                            <span class="skills__desc">Data analysis & scripting</span>
+                        <div class="skill-tag" data-level="intermediate">
+                            <i class="fab fa-python skill-tag__icon"></i>
+                            <span class="skill-tag__name">Python</span>
+                            <span class="skill-tag__desc">Data analysis &amp; scripting</span>
                         </div>
-                        <div class="skills__data" tabindex="0" style="--progress: 70" data-level="advanced">
-                            <div class="skills__progress-circle">
-                                <svg viewBox="0 0 120 120">
-                                    <circle class="skills__progress-bg" cx="60" cy="60" r="54" />
-                                    <circle class="skills__progress-bar" cx="60" cy="60" r="54" />
-                                </svg>
-                                <div class="skills__progress-text">70%</div>
-                            </div>
-                            <div class="skills__names"><i class="fas fa-terminal skills__icon"></i><span
-                                    class="skills__name">Bash Script</span></div>
-                            <span class="skills__desc">Shell scripting, automation</span>
+                        <div class="skill-tag" data-level="advanced">
+                            <i class="fas fa-terminal skill-tag__icon"></i>
+                            <span class="skill-tag__name">Bash Script</span>
+                            <span class="skill-tag__desc">Shell scripting, automation</span>
                         </div>
                     </div>
                 </div>
-                <div class="skills__group">
+                <div class="skills__group active">
                     <h3 class="skills__category">Web Development</h3>
                     <div class="skills__content">
-                        <div class="skills__data" tabindex="0" style="--progress: 90" data-level="expert">
-                            <div class="skills__progress-circle">
-                                <svg viewBox="0 0 120 120">
-                                    <circle class="skills__progress-bg" cx="60" cy="60" r="54" />
-                                    <circle class="skills__progress-bar" cx="60" cy="60" r="54" />
-                                </svg>
-                                <div class="skills__progress-text">90%</div>
-                            </div>
-                            <div class="skills__names"><i class='bx bxl-css3 skills__icon'></i><span
-                                    class="skills__name">HTML/CSS</span></div>
-                            <span class="skills__desc">Responsive web design</span>
+                        <div class="skill-tag" data-level="expert">
+                            <i class="bx bxl-css3 skill-tag__icon"></i>
+                            <span class="skill-tag__name">HTML/CSS</span>
+                            <span class="skill-tag__desc">Responsive web design</span>
                         </div>
-                        <div class="skills__data" tabindex="0" style="--progress: 50" data-level="intermediate">
-                            <div class="skills__progress-circle">
-                                <svg viewBox="0 0 120 120">
-                                    <circle class="skills__progress-bg" cx="60" cy="60" r="54" />
-                                    <circle class="skills__progress-bar" cx="60" cy="60" r="54" />
-                                </svg>
-                                <div class="skills__progress-text">50%</div>
-                            </div>
-                            <div class="skills__names"><i class='fab fa-react skills__icon'></i><span
-                                    class="skills__name">React</span></div>
-                            <span class="skills__desc">Component-based UI development</span>
+                        <div class="skill-tag" data-level="intermediate">
+                            <i class="fab fa-react skill-tag__icon"></i>
+                            <span class="skill-tag__name">React</span>
+                            <span class="skill-tag__desc">Component-based UI development</span>
                         </div>
                     </div>
                 </div>
-                <div class="skills__group">
+                <div class="skills__group active">
                     <h3 class="skills__category">Systems</h3>
                     <div class="skills__content">
-                        <div class="skills__data" tabindex="0" style="--progress: 85" data-level="advanced">
-                            <div class="skills__progress-circle">
-                                <svg viewBox="0 0 120 120">
-                                    <circle class="skills__progress-bg" cx="60" cy="60" r="54" />
-                                    <circle class="skills__progress-bar" cx="60" cy="60" r="54" />
-                                </svg>
-                                <div class="skills__progress-text">85%</div>
-                            </div>
-                            <div class="skills__names"><i class="fab fa-linux skills__icon"></i><span
-                                    class="skills__name">Linux</span></div>
-                            <span class="skills__desc">System administration</span>
+                        <div class="skill-tag" data-level="advanced">
+                            <i class="fab fa-linux skill-tag__icon"></i>
+                            <span class="skill-tag__name">Linux</span>
+                            <span class="skill-tag__desc">System administration</span>
                         </div>
                     </div>
                 </div>
-                <div class="skills__group">
-                    <h3 class="skills__category">IoT & Hardware</h3>
+                <div class="skills__group active">
+                    <h3 class="skills__category">IoT &amp; Hardware</h3>
                     <div class="skills__content">
-                        <div class="skills__data" tabindex="0" style="--progress: 50" data-level="intermediate">
-                            <div class="skills__progress-circle">
-                                <svg viewBox="0 0 120 120">
-                                    <circle class="skills__progress-bg" cx="60" cy="60" r="54" />
-                                    <circle class="skills__progress-bar" cx="60" cy="60" r="54" />
-                                </svg>
-                                <div class="skills__progress-text">50%</div>
-                            </div>
-                            <div class="skills__names"><i class="fa-brands fa-raspberry-pi skills__icon"></i><span
-                                    class="skills__name">Microcontroller</span></div>
-                            <span class="skills__desc">Embedded systems, IoT</span>
+                        <div class="skill-tag" data-level="intermediate">
+                            <i class="fa-brands fa-raspberry-pi skill-tag__icon"></i>
+                            <span class="skill-tag__name">Microcontroller</span>
+                            <span class="skill-tag__desc">Embedded systems, IoT</span>
                         </div>
                     </div>
                 </div>
@@ -531,7 +440,7 @@
             <div class="resizer resizer-tl"></div>
 
             <div class="chat-header">
-                <span>Ask AI Assistant</span>
+                <span>AI ASSISTANT</span>
                 <button id="chat-close-btn" class="chat-close-btn"><i class="fas fa-times"></i></button>
             </div>
             <div id="chat-messages" class="chat-messages">

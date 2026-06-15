@@ -70,22 +70,29 @@ export async function initProjects() {
             const iconsHtml = techStack.map(t => `<span title="${t}">${getTechIconHTML(t)}</span>`).join(' ');
 
             card.innerHTML = `
+                <a href="#" class="floating-arrow-link" aria-label="View project details">↗</a>
                 <img src="${p.image_url || 'assets/img/blog-default.jpg'}" alt="${p.title}" class="project__img" loading="lazy">
                 <div class="project__info">
                     <h3 class="project__title">${p.title}</h3>
                     <p class="project__desc">${p.description}</p>
                     <div class="project__tech-icons">${iconsHtml}</div>
-                    ${p.github_url ? `<a href="${p.github_url}" class="project__link" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub</a>` : ''}
-                    <button class="project__details-btn" type="button">View Details</button>
+                    ${p.github_url ? `<a href="${p.github_url}" class="project__link" target="_blank" rel="noopener" style="margin-right: 15px;"><i class="fab fa-github"></i> GitHub</a>` : ''}
+                    <button class="project__details-btn" type="button" style="display: none;">View Details</button>
                 </div>
             `;
 
-            // Attach click event for modal
-            const btn = card.querySelector('.project__details-btn');
-            btn.addEventListener('click', (e) => {
+            // Attach click event for modal (either card click or arrow click)
+            const handleDetails = (e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 openProjectModal(p);
-            });
+            };
+
+            card.addEventListener('click', handleDetails);
+            const arrowLink = card.querySelector('.floating-arrow-link');
+            if (arrowLink) {
+                arrowLink.addEventListener('click', handleDetails);
+            }
 
             return card;
         };

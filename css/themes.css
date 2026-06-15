@@ -1,46 +1,43 @@
-/*===== DARK MODE STYLES =====*/
-.dark-mode {
-  background: #181824 !important;
-  color: #e9a9ea !important;
+/*===== AURORA/DARK THEME OVERRIDES =====*/
+/* Since Auros is a dark-only theme, we ensure any active dark-mode classes map to the same Auros color system */
+
+.dark-mode,
+:root {
+  background-color: var(--surface-abyss);
+  color: var(--color-fog-veil);
+}
+
+.dark-mode body {
+  background-color: var(--surface-abyss);
+  color: var(--color-fog-veil);
 }
 
 .dark-mode .section-title {
-  color: #e9a9ea !important;
+  color: var(--color-snow-sheet) !important;
 }
 
 .dark-mode .footer {
-  background: #23234a !important;
-  color: #e9a9ea !important;
+  background: var(--surface-trench) !important;
+  color: var(--color-fog-veil) !important;
 }
 
 .dark-mode .button {
-  background: #23234a !important;
-  color: #e9a9ea !important;
+  background: var(--gradient-current-gradient) !important;
+  color: var(--color-midnight-current) !important;
 }
 
 .dark-mode .button:hover,
 .dark-mode .button:focus {
-  background: var(--first-color) !important;
-  color: #fff !important;
+  opacity: 0.9 !important;
 }
 
 .dark-mode .contact__input {
-  background: #23234a !important;
-  color: #e9a9ea !important;
-  border-color: #6366f1 !important;
+  background: var(--surface-trench) !important;
+  color: var(--color-snow-sheet) !important;
+  border-color: var(--color-ash-gray) !important;
 }
 
-.dark-mode .form-status--ok {
-  background: #23234a !important;
-  color: #a3bffa !important;
-}
-
-.dark-mode .form-status--error {
-  background: #3b1f1f !important;
-  color: #ff6b6b !important;
-}
-
-/* Dark mode for all sections */
+/* Surfaces */
 .dark-mode .section,
 .dark-mode .bd-grid,
 .dark-mode .about__container,
@@ -48,76 +45,70 @@
 .dark-mode .projects__container,
 .dark-mode .timeline__container,
 .dark-mode .contact__container {
-  background: #181824 !important;
-  color: #e9a9ea !important;
+  background: transparent !important;
 }
 
 .dark-mode .project__card,
 .dark-mode .skills__group,
 .dark-mode .timeline__item,
-.dark-mode .contact__form {
-  background: #23234a !important;
-  color: #e9a9ea !important;
+.dark-mode .contact__form,
+.dark-mode .achievement__card {
+  background-color: var(--surface-trench) !important;
+  color: var(--color-fog-veil) !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.dark-mode .project__card:hover,
+.dark-mode .skills__group:hover,
+.dark-mode .timeline__item:hover,
+.dark-mode .achievement__card:hover {
+  background-color: var(--surface-reef) !important;
 }
 
 .dark-mode .project__title,
-.dark-mode .project__desc,
 .dark-mode .skills__category,
-.dark-mode .skills__desc,
 .dark-mode .timeline__role,
-.dark-mode .timeline__desc,
 .dark-mode .footer__title,
-.dark-mode .footer__tagline {
-  color: #a3bffa !important;
+.dark-mode .achievement__title {
+  color: var(--color-snow-sheet) !important;
 }
 
 .dark-mode .nav__menu,
 .dark-mode .nav,
 .dark-mode .l-header {
-  background: #23234a !important;
-  color: #e9a9ea !important;
+  background: transparent !important;
+}
+
+.dark-mode .l-header.scrolled {
+  background: rgba(1, 38, 36, 0.9) !important;
+  border-bottom: 1px solid var(--color-ash-gray) !important;
 }
 
 .dark-mode .nav__link,
 .dark-mode .nav__logo {
-  color: #a3bffa !important;
+  color: var(--color-snow-sheet) !important;
 }
 
 .dark-mode .active-link {
-  color: var(--first-color) !important;
+  color: var(--color-snow-sheet) !important;
 }
 
 .dark-mode .project__modal-content {
-  background: #23234a !important;
-  color: #e9a9ea !important;
+  background: var(--surface-trench) !important;
+  color: var(--color-fog-veil) !important;
+  border: 1px solid var(--color-ash-gray) !important;
 }
 
 .dark-mode .project__modal-title {
-  color: #a3bffa !important;
+  color: var(--color-snow-sheet) !important;
 }
 
 .dark-mode .project__modal-desc {
-  color: #e9a9ea !important;
+  color: var(--color-fog-veil) !important;
 }
 
 .dark-mode .project__modal-links a {
-  color: #a3bffa !important;
+  color: var(--color-ice-mist) !important;
 }
 
-.dark-mode .project__modal-links a:hover,
-.dark-mode .project__modal-links a:focus {
-  color: var(--first-color) !important;
-}
-
-.dark-mode .achievement__card {
-  background: #23234a !important;
-  color: #e9a9ea !important;
-}
-
-.dark-mode .achievement__title {
-  color: #a3bffa !important;
-}
-
-.dark-mode .achievement__issuer {
-  color: #bfc7e6 !important;
-}

@@ -126,14 +126,14 @@
                                     <button type="button" id="profile-hero-upload-btn"
                                         class="button button--outline">Upload</button>
                                 </div>
-                                <div id="profile-hero-preview" style="margin-top: 1rem;">
+                                <div id="profile-hero-preview">
                                     <img id="profile-hero-preview-img" src="" alt="Hero Preview"
-                                        style="max-width: 200px; border-radius: 50%; display: none;">
+                                        class="admin-preview-img hero">
                                 </div>
                             </div>
 
-                            <hr style="margin: 2rem 0; border: none; border-top: 1px solid #e0e0e0;">
-                            <h4 style="margin-bottom: 1rem;">About Section</h4>
+                            <hr class="admin-section-divider">
+                            <h4>About Section</h4>
 
                             <div class="form-group">
                                 <label for="profile-about-image">About Image</label>
@@ -144,9 +144,9 @@
                                     <button type="button" id="profile-about-upload-btn"
                                         class="button button--outline">Upload</button>
                                 </div>
-                                <div id="profile-about-preview" style="margin-top: 1rem;">
+                                <div id="profile-about-preview">
                                     <img id="profile-about-preview-img" src="" alt="About Preview"
-                                        style="max-width: 200px; border-radius: 1rem; display: none;">
+                                        class="admin-preview-img about">
                                 </div>
                             </div>
 
@@ -161,7 +161,7 @@
                                     placeholder="Write about yourself..."></textarea>
                             </div>
 
-                            <hr style="margin: 2rem 0; border: none; border-top: 1px solid #e0e0e0;">
+                            <hr class="admin-section-divider">
 
                             <div class="form-group">
                                 <label for="profile-cv">CV (PDF)</label>
@@ -171,13 +171,12 @@
                                     <button type="button" id="profile-cv-upload-btn"
                                         class="button button--outline">Upload</button>
                                 </div>
-                                <div id="profile-cv-status"
-                                    style="margin-top: 0.5rem; font-size: 0.9rem; color: #4a4e69;"></div>
+                                <div id="profile-cv-status" class="admin-upload-status"></div>
                             </div>
 
                             <div class="form-group">
                                 <button type="button" id="profile-save-btn" class="button">Save Profile</button>
-                                <span id="profile-save-status" style="margin-left: 1rem;"></span>
+                                <span id="profile-save-status" class="admin-status-text"></span>
                             </div>
                         </form>
                     </div>

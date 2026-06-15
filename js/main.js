@@ -70,14 +70,14 @@ if (typeof ScrollReveal !== 'undefined') {
         //     reset: true
     });
 
-    sr.reveal('.home__data, .about__img, .skills__subtitle, .skills__text', {});
-    sr.reveal('.home__img, .about__subtitle, .about__text, .skills__img', { delay: 400 });
+    sr.reveal('.home__data, .about__img', {});
+    sr.reveal('.home__img, .about__subtitle, .about__text', { delay: 400 });
     sr.reveal('.home__social-icon', { interval: 200 });
-    sr.reveal('.skills__data, .work__img, .contact__input, .achievement__card', { interval: 200 });
+    sr.reveal('.skill-tag, .work__img, .contact__input, .achievement__card', { interval: 200 });
 } else {
     console.warn('ScrollReveal is not defined. Content will be visible by default.');
     // Ensure content is visible if ScrollReveal fails
-    document.querySelectorAll('.home__data, .about__img, .skills__subtitle, .skills__text, .home__img, .about__subtitle, .about__text, .skills__img, .home__social-icon, .skills__data, .work__img, .contact__input').forEach(el => {
+    document.querySelectorAll('.home__data, .about__img, .home__img, .about__subtitle, .about__text, .home__social-icon, .skill-tag, .work__img, .contact__input').forEach(el => {
         el.style.visibility = 'visible';
         el.style.opacity = '1';
     });
@@ -95,29 +95,6 @@ document.querySelector(".button").addEventListener("click", function (event) {
     document.body.appendChild(tempLink); // Append the link to the document
     tempLink.click(); // Programmatically click the link
     document.body.removeChild(tempLink); // Remove the link after download
-});
-
-/*===== SKILL BAR ANIMATION ON HOVER/FOCUS =====*/
-/*===== SKILL BAR ANIMATION ON HOVER/FOCUS =====*/
-document.querySelectorAll('.skills__data').forEach(skill => {
-    const bar = skill.querySelector('.skills__bar');
-    const percent = skill.querySelector('.skills__percentage');
-    if (bar && percent) {
-        const width = percent.textContent.trim();
-        bar.style.transition = 'width 1s cubic-bezier(.77,0,.18,1)';
-        skill.addEventListener('mouseenter', () => {
-            bar.style.width = width;
-        });
-        skill.addEventListener('focus', () => {
-            bar.style.width = width;
-        });
-        skill.addEventListener('mouseleave', () => {
-            bar.style.width = '0';
-        });
-        skill.addEventListener('blur', () => {
-            bar.style.width = '0';
-        });
-    }
 });
 
 /*===== PROJECT CARD MODAL PREVIEW (RICHER, BUTTON ONLY) =====*/

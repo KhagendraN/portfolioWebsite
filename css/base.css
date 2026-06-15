@@ -1,39 +1,101 @@
 /*===== GOOGLE FONTS =====*/
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap");
 
 /*===== VARIABLES CSS =====*/
 :root {
-  --header-height: 3rem;
-  --font-semi: 600;
-  /*===== Colores =====*/
-  /*Purple 260 - Red 355 - Blue 224 - Pink 340*/
-  /* HSL color mode */
-  --hue-color: 224;
-  --first-color: hsl(var(--hue-color), 89%, 60%);
-  --second-color: hsl(var(--hue-color), 56%, 12%);
-  /*===== Fuente y tipografia =====*/
-  --body-font: "Poppins", sans-serif;
-  --big-font-size: 2rem;
-  --h2-font-size: 1.25rem;
-  --normal-font-size: .938rem;
-  --smaller-font-size: .75rem;
-  /*===== Margenes =====*/
-  --mb-2: 1rem;
-  --mb-4: 2rem;
-  --mb-5: 2.5rem;
-  --mb-6: 3rem;
-  /*===== z index =====*/
-  --z-back: -10;
-  --z-fixed: 100;
-}
+  --header-height: 3.5rem;
+  
+  /* Colors */
+  --color-abyssal-teal: #012624;
+  --color-midnight-current: #011d1c;
+  --color-tide-pool-teal: #003734;
+  --color-fog-veil: #bbc7c6;
+  --color-ice-mist: #edfffe;
+  --color-ash-gray: #333333;
+  --color-snow-sheet: #ffffff;
+  --color-lilac-wisp: #fde9ff;
+  
+  --gradient-current-gradient: linear-gradient(90deg, #00827c 0%, #cbfffc 100%);
+  --gradient-aurora-gradient: linear-gradient(90deg, #cbfffc 0%, #edfffe 26%, #fffdfa 48%, #fad1ff 89%);
+  --gradient-twilight-gradient: linear-gradient(90deg, #cbfffc 0%, #edfffe 26%, #fffdfa 48%, #fad1ff 89%);
 
-@media screen and (min-width: 968px) {
-  :root {
-    --big-font-size: 3.5rem;
-    --h2-font-size: 2rem;
-    --normal-font-size: 1rem;
-    --smaller-font-size: .875rem;
-  }
+  /* Legacy layout variable mappings to prevent breakage */
+  --first-color: #00827c;
+  --second-color: #bbc7c6;
+
+  /* Typography — Font Families */
+  --font-matter: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-arial: 'Arial', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Typography — Scale */
+  --text-eyebrow: 10px;
+  --leading-eyebrow: 1.4;
+  --tracking-eyebrow: 2.4px;
+  --text-caption: 12px;
+  --leading-caption: 1.4;
+  --tracking-caption: 1.44px;
+  --text-body: 14px;
+  --leading-body: 1.5;
+  --tracking-body: 0.77px;
+  --text-body-lg: 16px;
+  --leading-body-lg: 1.5;
+  --text-subheading: 20px;
+  --leading-subheading: 1.4;
+  --text-heading-sm: 24px;
+  --leading-heading-sm: 1.4;
+  --tracking-heading-sm: -0.29px;
+  --text-heading: 36px;
+  --leading-heading: 1.3;
+  --tracking-heading: -0.47px;
+  --text-heading-lg: 61px;
+  --leading-heading-lg: 1.1;
+  --tracking-heading-lg: -1.22px;
+  --text-display: 96px;
+  --leading-display: 1;
+  --tracking-display: -3.84px;
+  --text-display-xl: 295px;
+  --leading-display-xl: 1;
+  --tracking-display-xl: -13.57px;
+
+  /* Typography — Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+
+  /* Spacing */
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-20: 20px;
+  --spacing-24: 24px;
+  --spacing-28: 28px;
+  --spacing-32: 32px;
+  --spacing-36: 36px;
+  --spacing-40: 40px;
+  --spacing-48: 48px;
+  --spacing-64: 64px;
+  --spacing-80: 80px;
+  --spacing-120: 120px;
+  --spacing-140: 140px;
+  --spacing-156: 156px;
+  --spacing-160: 160px;
+  --spacing-172: 172px;
+
+  /* Layout */
+  --page-max-width: 1200px;
+  --section-gap: 68px;
+  --card-padding: 40px;
+  --element-gap: 20px;
+
+  /* Border Radius */
+  --radius-tags: 6px;
+  --radius-cards: 16px;
+  --radius-inputs: 6px;
+  --radius-avatars: 9999px;
+  --radius-buttons: 6px;
+
+  /* Surfaces */
+  --surface-abyss: #012624;
+  --surface-trench: #011d1c;
+  --surface-reef: #003734;
 }
 
 /*===== BASE =====*/
@@ -49,14 +111,21 @@ html {
 
 body {
   margin: var(--header-height) 0 0 0;
-  font-family: var(--body-font);
-  font-size: var(--normal-font-size);
-  color: var(--second-color);
-  background: #FF936E;
+  font-family: var(--font-matter);
+  font-size: var(--text-body);
+  color: var(--color-fog-veil);
+  background: var(--surface-abyss);
+  letter-spacing: var(--tracking-body);
+  line-height: var(--leading-body);
+  overflow-x: hidden;
 }
 
 h1,
 h2,
+h3,
+h4,
+h5,
+h6,
 p {
   margin: 0;
 }
@@ -83,49 +152,41 @@ img {
 
 /*===== CLASS CSS ===== */
 .section-title {
-  position: relative;
-  font-size: var(--h2-font-size);
-  color: #fff;
-  margin-top: var(--mb-2);
-  margin-bottom: var(--mb-4);
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: var(--text-heading);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-snow-sheet);
+  margin-top: 0;
+  margin-bottom: var(--spacing-40);
+  letter-spacing: var(--tracking-heading);
+  line-height: var(--leading-heading);
 }
 
-.section-title::after {
-  position: absolute;
-  content: "";
-  width: 64px;
-  height: 0.18rem;
-  left: 0;
-  right: 0;
-  margin: auto;
-  top: 2rem;
+.section-title::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
   background-color: var(--first-color);
-}
-
-.section {
-  padding-top: 3rem;
-  padding-bottom: 2rem;
-}
-
-/*===== GENERAL UI/UX POLISH =====*/
-body {
-  font-family: 'Roboto', 'Poppins', sans-serif;
-  background: #f7f7fa;
-  color: #22223b;
+  border-radius: 50%;
 }
 
 .section {
   padding-top: 4rem;
-  padding-bottom: 3rem;
+  padding-bottom: 4rem;
+  max-width: var(--page-max-width);
+  margin: 0 auto;
 }
 
 ::-webkit-scrollbar {
   width: 8px;
-  background: #f0e9ff;
+  background: var(--surface-trench);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--first-color);
+  background: var(--surface-reef);
   border-radius: 4px;
 }
+
